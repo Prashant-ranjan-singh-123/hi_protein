@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "501599215603",
+    "project_id": "hiprotein-893bc",
+    "storage_bucket": "hiprotein-893bc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:501599215603:android:49ccfa225bf5c4b62bbc86",
+        "android_client_info": {
+          "package_name": "com.hiprotein.hiprotein"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "501599215603-d7btmg07k726rore8l4rj4snrro24kol.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCu0sTLcycC-IhMJSOtKjQx98M18E5Pv_k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "501599215603-d7btmg07k726rore8l4rj4snrro24kol.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

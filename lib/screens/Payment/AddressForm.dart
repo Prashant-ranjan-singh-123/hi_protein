@@ -26,7 +26,6 @@ class AddressForm extends StatefulWidget {
   @override
   _AddressFormState createState() => _AddressFormState();
 }
-
 class _AddressFormState extends State<AddressForm> {
   final GlobalKey<ScaffoldState> _scafoldkey = GlobalKey<ScaffoldState>();
   String latitudeStr = '', longitudeStr = '';
@@ -79,9 +78,7 @@ class _AddressFormState extends State<AddressForm> {
             color: Palette.black,
           ),
         ),
-        title: Text(
-          'Delivery Address',
-          style: Util.txt(Palette.black, 18, FontWeight.w600),
+        title: Text('Delivery Address',style: Util.txt(Palette.black, 18, FontWeight.w600),
         ),
       ),
       body: checkConnection(),

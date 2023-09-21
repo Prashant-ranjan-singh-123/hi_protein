@@ -443,7 +443,6 @@ class PaymentScreenState extends State<PaymentScreen> {
       }
     }
   }
-
   void updata() async {
     // Util.showProgress(context);
     String tempo;
@@ -464,6 +463,7 @@ class PaymentScreenState extends State<PaymentScreen> {
       'eDate': widget.totaltimevalue, //widget.share['estimate_time'],
       'discount': widget.discountvalue
     };
+    //print('map $map');
     var respo = await http.post(Uri.parse('${Util.baseurl}placeorder.php'),
         body: jsonEncode(map));
     tempo = respo.statusCode.toString();
@@ -471,6 +471,7 @@ class PaymentScreenState extends State<PaymentScreen> {
       if (respo.statusCode == 200) {
         // Util.dismissDialog(_scaffoldkey.currentContext!);
         var decc = jsonDecode(respo.body);
+       // print('placeorder $decc');
         if (decc['success'] == 'true') {
           //showDlog(decc['message']);
           showResponseAlert1(decc['message']);

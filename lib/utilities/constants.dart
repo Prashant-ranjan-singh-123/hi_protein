@@ -245,7 +245,6 @@ class Util {
       duration: const Duration(seconds: 1),
     );
   }
-
   //--------------------------- Notification -----------------------------------------
   static updateNotification() async {
     String medium = '';

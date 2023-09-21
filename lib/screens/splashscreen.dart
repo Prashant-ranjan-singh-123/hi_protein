@@ -22,8 +22,8 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  String versionAndroid = '1.0.2';
-  String versionIOS='1.0.2';
+  String versionAndroid = '1.0.5';
+  String versionIOS='1.0.5';
   @override
   void initState() {
     checkLogin();
@@ -33,17 +33,17 @@ class _SplashScreenState extends State<SplashScreen> {
 
   checkLogin() async {
     Util.updateNotification();
-   // checkVersion();
-    await Future.delayed(const Duration(seconds: 2)).then((value) => nav());
+    checkVersion();
+    //await Future.delayed(const Duration(seconds: 2)).then((value) => nav());
   }
   checkVersion()async{
     final response = await http.get(Uri.parse('${Util.baseurl}appupdate.php'));
-    print('app update response is :${response.body}');
+   // print('app update response is :${response.body}');
     try{
       if(response.statusCode==200){
         var deco = jsonDecode(response.body);
         if(Platform.isAndroid){
-          if('1.0.2'==deco['version']){
+          if(versionAndroid==deco['version']){
             checking();//deco['version']
           }
           else{
@@ -74,11 +74,11 @@ class _SplashScreenState extends State<SplashScreen> {
                   title: Text(deco['title'],style: Util.txt(Palette.black, 16, FontWeight.w600),),
                   content: Text(deco['messageIOS'],style: Util.txt(Palette.black, 14, FontWeight.w400),),
                   actions: [
-                    deco['priority']=='low'?TextButton(onPressed: (){
+                    deco['priorityIOS']=='low'?TextButton(onPressed: (){
                       Navigator.pop(context);
                       checking();
                     }, child: Text('IGNORE',style: Util.txt(Palette.black, 16, FontWeight.w500),)):Container(),
-                    deco['priority']!='maintenance'?TextButton(onPressed: (){
+                    deco['priorityIOS']!='maintenance'?TextButton(onPressed: (){
                       String url ='https://apps.apple.com/us/app/hi-protein/id6450906125';
                       _launchURL(url);
                     }, child: Text('UPDATE NOW',style: Util.txt(Palette.black, 16, FontWeight.w500),)):Container(),
@@ -108,7 +108,6 @@ class _SplashScreenState extends State<SplashScreen> {
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => const HomeScreen()));
   }
-  
   fcm() {
     FirebaseMessaging.instance
         .getInitialMessage()

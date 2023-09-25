@@ -300,8 +300,7 @@ class _AddressFormState extends State<AddressForm> {
             child: OutlinedButton(
               onPressed: validate,
               style: ButtonStyle(
-                side:
-                    MaterialStateProperty.all(BorderSide(color: Palette.black)),
+                side:MaterialStateProperty.all(BorderSide(color: Palette.black)),
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 padding: MaterialStateProperty.all(
                     const EdgeInsets.fromLTRB(4, 0, 4, 0)),
@@ -316,7 +315,6 @@ class _AddressFormState extends State<AddressForm> {
       ),
     );
   }
-
   validate() async{
     FocusScope.of(context).requestFocus(FocusNode());
     if (fn.text.isNotEmpty &&

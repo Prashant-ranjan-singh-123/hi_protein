@@ -52,16 +52,16 @@ class LifecycleEventHandler extends WidgetsBindingObserver {
       final response = await http.Response.fromStream(snd);
       if (response.statusCode == 200) {
         var dec = jsonDecode(response.body);
-        print('availbility dec: $dec');
+        //print('availbility dec: $dec');
         if (dec['status'] == '1') {
           isavailable = true;
-          print('status1');
+          //print('status1');
           Util.addStringToSF('availability', dec['status'].toString(),'');
           Util.addStringToSF('availabl', dec['available'].toString(),'');
           Util.addStringToSF('msg', dec['message'].toString(),'');
         } else {
           if(isavailable == true){
-            print('status0');
+           // print('status0');
             Util.addStringToSF('availability', '0','');
             Util.addStringToSF('availabl', dec['available'].toString(),'');
             isavailable = false;

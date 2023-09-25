@@ -44,7 +44,7 @@ class _ProductItemsState extends State<ProductItems> {
 
   getImages() async {
     deliveraddress = await Util.getStringValuesSF('deliverto');
-    print('deliveraddress :$deliveraddress');
+    //print('deliveraddress :$deliveraddress');
     carousel = [];
     Map<String, String> map = {'client': Util.clientName};
     http.Response response = await http.post(Uri.parse('${Util.baseurl}carousel.php'), body: jsonEncode(map));
@@ -76,7 +76,7 @@ class _ProductItemsState extends State<ProductItems> {
     try {
       if (response.statusCode == 200) {
         var dec = jsonDecode(response.body);
-        Util.logDebug('ddec:$dec');
+        //Util.logDebug('ddec:$dec');
         if (dec['success']) {
           category1.addAll(dec['categorylist']);
           int tmp = 5;
@@ -452,7 +452,7 @@ class _ProductItemsState extends State<ProductItems> {
   }
   deliveryavailabilitymethod(){
     if(deliveraddress.toString() == ''){
-      print('delivery address is null');
+      //print('delivery address is null');
     if(Util.control.deliveryAdd.value == 'Check Delivery Availability'){confDial('Info','Choose Check Delivery Availability');}else{}
     }else{
       setState(() {

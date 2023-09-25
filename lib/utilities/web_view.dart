@@ -33,7 +33,6 @@ class _WebViewAppState extends State<WebViewApp> {
         await p;
         return p;
       """;
-
     var result = await controller.callAsyncJavaScript(
         functionBody: functionBody,
         arguments: {'x': 49, 'y': 'error message'});

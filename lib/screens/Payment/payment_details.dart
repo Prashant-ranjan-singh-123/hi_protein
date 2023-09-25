@@ -92,20 +92,19 @@ class _PaymentDetailsState extends State<PaymentDetails> {
     }
     getData();
   }
-
   getData() async {
     currenttime = '${widget.share['estimate_time']}';
     shippervaluestring = '${widget.shippervalue['shipper']}';
-    print('shipper value is :$shippervaluestring');
+    //print('shipper value is :$shippervaluestring');
     var c = int.parse(currenttime);
     totaltime = c + addtime;
     payKeys = [];
     contactUs = [];
     String userid = await Util.getStringValuesSF('userid');
     available = await Util.getStringValuesSF('availabl');
-    print('available:$available');
+    //print('available:$available');
     message = await Util.getStringValuesSF('msg');
-    print('message:$message');
+    //print('message:$message');
     try {
       final productList = http.MultipartRequest(
           'POST', Uri.parse('${Util.baseurl}addresslist.php'));
@@ -394,15 +393,15 @@ class _PaymentDetailsState extends State<PaymentDetails> {
       final response = await http.Response.fromStream(snd);
       if (response.statusCode == 200) {
         var dec = jsonDecode(response.body);
-        print('availbility dec: $dec');
+        //print('availbility dec: $dec');
         if (dec['status'] == '1') {
           //isavailable = true;
          // print('status1 is');
-          print(dec['available'].toString());
+         // print(dec['available'].toString());
           Util.addStringToSF('availability', dec['status'].toString(),'');
           Util.addStringToSF('availabl', dec['available'].toString(),'');
           Util.addStringToSF('msg', dec['message'].toString(),'');
-          if(dec['available'].toString()== 'true'){createRequest();}else{print('calling');showResponseAlert(dec['message'].toString());}
+          if(dec['available'].toString()== 'true'){createRequest();}else{showResponseAlert(dec['message'].toString());}
           
         } else {
           //if(isavailable == true){
@@ -556,7 +555,7 @@ class _PaymentDetailsState extends State<PaymentDetails> {
       'tid': sentId,
       'merchant_id': payKeys[0].keyId,
       'order_id': orderID.toString(),
-      'amount': c.checkOutPrice.toString(),
+      'amount': '10',//c.checkOutPrice.toString(),
       'currency': 'INR',
       'redirect_url': "https://redbag.vensframe.com/app/ccavenueResponse.php",
       'cancel_url': "https://redbag.vensframe.com/app/ccavenueResponse.php",
@@ -570,7 +569,8 @@ class _PaymentDetailsState extends State<PaymentDetails> {
       'billing_tel': c.delMobile.value,
       'billing_email': email,
     });
-
+    
+    //print('body:$body');
     if (res.statusCode == 200) {
       var jsonData = jsonDecode(res.body);
       encryptedstring = jsonData['encryptdata'];

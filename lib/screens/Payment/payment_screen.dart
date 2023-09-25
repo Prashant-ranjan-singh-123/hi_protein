@@ -1,3 +1,5 @@
+// ignore_for_file: unrelated_type_equality_checks
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -6,9 +8,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
-import 'package:hi_protein/main.dart';
 import 'package:html/parser.dart' show parse;
 import 'package:http/http.dart' as http;
 import 'package:webview_flutter/webview_flutter.dart';
@@ -25,9 +26,7 @@ final Set<JavascriptChannel> jsChannels = {
       name: 'Print',
       onMessageReceived: (JavascriptMessage message) {
         print('message is :${message.message.toString()}');
-        
-      }),
-      
+      }), 
 };
 
 class PaymentScreen extends StatefulWidget {
@@ -61,18 +60,20 @@ class PaymentScreen extends StatefulWidget {
 }
 
 class PaymentScreenState extends State<PaymentScreen> {
-  String filePath = 'assets/images/blank.html';
+  String finalhtmlContent = '';
   final GlobalKey<ScaffoldState> _scafoldkey = GlobalKey<ScaffoldState>();
-  bool isredirected = false, isloading = false;
+  bool isloading = false;
   List username = [];
   String? url; //encryptedstring = '', accesscodestring = '';
-  String? random13DigitNumber;
-  String? orderid6DigitNumber;
+  //String? random13DigitNumber;
+  //String? orderid6DigitNumber;
   String orderstatus = '', trackingidvalue = '';
   bool initializedPayment = false;
   String errorMessage = "";
   String loadingMessage = "";
-  late WebViewController controller;
+  //late WebViewController controller;
+  late InAppWebViewController webViewController;
+  double progress = 0;
   String cancelUrl = "https://redbag.vensframe.com/app/ccavenueResponse.php";
   String redirectUrl = "https://redbag.vensframe.com/app/ccavenueResponse.php";
   String requestInitiateUrl = "https://redbag.vensframe.com/app/ccavenueRequest.php";
@@ -82,13 +83,17 @@ class PaymentScreenState extends State<PaymentScreen> {
     Future.delayed(const Duration(microseconds: 1)).then((value) => initAsync());
     super.initState();
   }
+  @override
+  void dispose() {
+    webViewController;
+    // close the webview here
+    super.dispose();
+  }
   initAsync() async {
     Util.showProgress(context);
-    //Generating payment order and fetching URLs for the payment
     try {
       errorMessage = "";
-      loadingMessage =
-          "Please Do not close window,\nprocessing your request....";
+      loadingMessage = "Please Do not close window,\nprocessing your request....";
       setState(() {});
       //final res = await initPayment(); //(widget.amount ~/ 100).toString()
       url = "https://${isTesting ? "test" : "secure"}.ccavenue.com/transaction.do?command=initiateTransaction&encRequest=${widget.encryptedstring}&access_code=${widget.accescodestring}";
@@ -101,39 +106,6 @@ class PaymentScreenState extends State<PaymentScreen> {
       setState(() {});
     }
   }
-  /*initPayment() async {
-    //print(widget.amount);
-    var url = requestInitiateUrl;
-    Uri uri = Uri.parse(url);
-    var res = await http.post(uri, body: {
-      'tid': random13DigitNumber!,
-      'merchant_id': '2661103',
-      'order_id': orderid6DigitNumber!,
-      'amount': '10',
-      'currency': 'INR',
-      'redirect_url': redirectUrl,
-      'cancel_url': cancelUrl,
-      'language': 'EN',
-      'billing_name': 'Nageswara Rao',
-      'billing_address': 'borabanda',
-      'billing_city': 'Hyderabad',
-      'billing_state': 'telangana',
-      'billing_zip': '500018',
-      'billing_country': 'in',
-      'billing_tel': '9346762968',
-      'billing_email': 'vajram88@gmail.com',
-    });
-    if (res.statusCode == 200) {
-      var jsonData = jsonDecode(res.body);
-      //encryptedstring = jsonData['encryptdata'];
-      //accesscodestring = jsonData['access'];
-      //print('jsonData: $jsonData');
-      // print('accesscode:$accesscodestring');
-      return jsonData;
-    } else {
-      throw Exception();
-    }
-  }*/
   @override
   Widget build(context) {
     return WillPopScope(
@@ -155,7 +127,15 @@ class PaymentScreenState extends State<PaymentScreen> {
         ),
         body: initializedPayment
             ? Platform.isAndroid
-                ? WebView(
+                ? InAppWebView(
+                  initialUrlRequest: URLRequest(url: Uri.parse(url!),),
+                  onWebViewCreated: (InAppWebViewController controller) {webViewController = controller;},
+                  onLoadStop: (controller, url) async {
+                    finalhtmlContent = await controller.evaluateJavascript(source: "new XMLSerializer().serializeToString(document);");
+                    url.toString() == redirectUrl.toString()?redirectedAndroidMethod():'';
+                    if(isloading == false){Util.dismissDialog(_scafoldkey.currentContext!);isloading = true;}},
+                  onProgressChanged: (InAppWebViewController controller, int progress) {
+                    setState(() {this.progress = progress / 100;});},)/*WebView(
                     initialUrl: url,
                     javascriptMode: JavascriptMode.unrestricted,
                     javascriptChannels: jsChannels,
@@ -165,33 +145,52 @@ class PaymentScreenState extends State<PaymentScreen> {
                     },
                     onPageFinished: (url) async {
                       if(isloading == false){Util.dismissDialog(_scafoldkey.currentContext!);isloading = true;}
+                      print('redirect url:$url');
                       if (url == redirectUrl) {
                         // handleURLRedirect(url);
                         if(isredirected == false){
-                          loadHtmlFromAssets();
+                          print('redirected1 message');
+                          //loadHtmlFromAssets();
                           redirectUrlMethodAndroid();
                           isredirected = true;
                         }
                       }
+                      else{print('redirect urlisnot:$url');}
                       if (url == cancelUrl) {}
                     },
                     navigationDelegate: (NavigationRequest nav) async {
-                      if (nav.url == redirectUrl) {
-                        return nav.url == url
+                      print('urlis:$url');
+                      //if (nav.url == redirectUrl) {
+                        //if(isredirected == false){
+                          print('redirected message url:${nav.url}');
+                         // handleURLRedirect(nav.url);
+                          //loadHtmlFromAssets();
+                          redirectUrlMethodAndroid();
+                          //isredirected = true;
+                        //}
+                       /* return nav.url == url
                             ? NavigationDecision.navigate
-                            : NavigationDecision.prevent;
+                            : NavigationDecision.prevent;*/
                         //return NavigationDecision.navigate;
-                      }
+                     // }
                       if (nav.url == cancelUrl) {
                         return NavigationDecision.navigate;
                       }
                       return NavigationDecision.prevent;
                     },
-                  )
+                  )*/
                 : Column(
                     children: [
                       Expanded(
-                          child: WebView(
+                          child:InAppWebView(
+                  initialUrlRequest: URLRequest(url: Uri.parse(url!),),
+                  onWebViewCreated: (InAppWebViewController controller) {webViewController = controller;},
+                  onLoadStop: (controller, url) async {
+                    finalhtmlContent = await controller.evaluateJavascript(source: "new XMLSerializer().serializeToString(document);");
+                    url.toString() == redirectUrl.toString()?redirectediOSMethod():'';
+                    if(isloading == false){Util.dismissDialog(_scafoldkey.currentContext!);isloading = true;}},
+                  onProgressChanged: (InAppWebViewController controller, int progress) {
+                    setState(() {this.progress = progress / 100;});},)/*WebView(
                         javascriptMode: JavascriptMode.unrestricted,
                         javascriptChannels: jsChannels,
                         initialUrl: url,
@@ -204,7 +203,7 @@ class PaymentScreenState extends State<PaymentScreen> {
                           if (url == redirectUrl) {
                             if(isredirected == false){
                               print('redirecturl');
-                              loadHtmlFromAssets();
+                              //loadHtmlFromAssets();
                               redirectUrlMethodIos();
                               isredirected = true;
                             }
@@ -241,7 +240,7 @@ class PaymentScreenState extends State<PaymentScreen> {
                         //   controller = c;
                         //   setState(() {});
                         // },
-                      ))
+                      )*/)
                     ],
                   )
             : (loadingMessage.isNotEmpty
@@ -262,26 +261,32 @@ class PaymentScreenState extends State<PaymentScreen> {
     );
   }
   loadHtmlFromAssets() async {
-    String filehtmlcontents = await rootBundle.loadString(filePath);
-    controller.loadUrl(Uri.dataFromString(filehtmlcontents,mimeType: 'text/html',encoding: Encoding.getByName('utf-8')).toString());
-
+    String filehtmlcontents = await rootBundle.loadString('assets/images/blank.html');
+    //controller.loadUrl(Uri.dataFromString(filehtmlcontents,mimeType: 'text/html',encoding: Encoding.getByName('utf-8')).toString());
+    webViewController.loadData(data:filehtmlcontents,mimeType: 'text/html',encoding:'utf-8');
   }
+
   void generateRandomNumber() {
     //var loopCount = 1;
-    final random = Random();
+    /*final random = Random();
     // for (var i = 0; i < loopCount; i++) {
     final doubleValue = random.nextDouble();
     random13DigitNumber = doubleValue.toString().substring(5);
-    orderid6DigitNumber = doubleValue.toString().substring(12);
+    orderid6DigitNumber = doubleValue.toString().substring(12);*/
     // }
   }
+  void redirectediOSMethod(){
+    loadHtmlFromAssets();
+    redirectUrlMethodIos();
+  }
   redirectUrlMethodIos() async {
-    String htmlContent = await controller.runJavascriptReturningResult('document.documentElement.outerHTML');
+    //String htmlContent = await controller.runJavascriptReturningResult('document.documentElement.outerHTML');
    // print(htmlContent);
-    final parsedJson = parse(htmlContent);
+    //final parsedJson = parse(htmlContent);
+    final parsedJson = parse(finalhtmlContent);
     var jsonData = parsedJson.body?.text;
    // print('jsonData: $jsonData');
-    controller.clearCache();
+    webViewController.clearCache();
     final result = jsonDecode(jsonData!);
    // print('result: $result');
    // final jsonResponse = json.decode(formatHtmlString(result));
@@ -307,15 +312,20 @@ class PaymentScreenState extends State<PaymentScreen> {
       showResponseAlert(orderstatus);
     }
   }
+  void redirectedAndroidMethod(){
+    loadHtmlFromAssets();
+    redirectUrlMethodAndroid();
+  }
   redirectUrlMethodAndroid() async {
-    String htmlContent = await controller
-        .runJavascriptReturningResult('document.documentElement.outerHTML');
-    final parsedJson = parse(htmlContent);
+   // String htmlContent = await controller.runJavascriptReturningResult('document.documentElement.outerHTML');
+    //print('html content is:$htmlContent');
+    final parsedJson = parse(finalhtmlContent);
     var jsonData = parsedJson.body?.text;
-    controller.clearCache();
+    //print('jsondata:$jsonData');
+    webViewController.clearCache();
     final result = jsonDecode(jsonData!);
-    final jsonResponse = json.decode(formatHtmlString(result));
-    username = jsonResponse['status'];
+    //final jsonResponse = json.decode(formatHtmlString(result));
+    username = result['status'];
     for (String statusEntry in username) {
       if (statusEntry.startsWith('order_status=')) {
         orderstatus = statusEntry.substring('order_status='.length);

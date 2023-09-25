@@ -47,7 +47,7 @@ class _ProductListState extends State<ProductList> {
       final response = await http.Response.fromStream(snd);
       if(response.statusCode==200){
          var dec = jsonDecode(response.body);
-         print(dec);
+         //print(dec);
          if(dec['data'].length == 0){loader = false;}
          for(int i=0;i<dec['data'].length;i++){
            prodList.add(ProductModel(name: dec['data'][i]['name'], image: dec['data'][i]['image'], uuid: dec['data'][i]['uuid'], count: dec['data'][i]['count'],
@@ -225,12 +225,12 @@ class _ProductListState extends State<ProductList> {
                                                   // ),
                                                   child: OutlinedButton(onPressed: () async {
                                                     String userid = await Util.getStringValuesSF('userid');
-                                                    print('user id $userid');
+                                                    //print('user id $userid');
                                                     available = await Util.getStringValuesSF('availability');
                                                       if(available.toString() == '1') {
                                                         onlineCart(prodList[i].uuid, i, 1);
                                                       }
-                                                      else{print('order not available');if(userid==''||userid.toString()=='null'){Util.showLoginPop(_scaffoldkey.currentContext!,'Please Login to continue...',{'nav':0,'name':widget.name,'state':widget.state});return;};Util.customDialog('sorry, we are not accepting orders at this moment','',context);}
+                                                      else{if(userid==''||userid.toString()=='null'){Util.showLoginPop(_scaffoldkey.currentContext!,'Please Login to continue...',{'nav':0,'name':widget.name,'state':widget.state});return;};Util.customDialog('sorry, we are not accepting orders at this moment','',context);}
                                                   },
                                                     style: ButtonStyle(
                                                         side: MaterialStateProperty.all(BorderSide(color: Palette.black,width: 1.2)),

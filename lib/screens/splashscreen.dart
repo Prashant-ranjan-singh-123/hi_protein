@@ -16,11 +16,9 @@ import '../utilities/palette.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
-
   @override
   State<SplashScreen> createState() => _SplashScreenState();
 }
-
 class _SplashScreenState extends State<SplashScreen> {
   String versionAndroid = '1.0.5';
   String versionIOS='1.0.5';

@@ -34,7 +34,7 @@ class _CartBillingState extends State<CartBilling> {
     String userid = await Util.getStringValuesSF('userid');
     available = await Util.getStringValuesSF('availability');
     outofstockcount = await Util.getStringValuesSF('outofstockvalue');
-    print('outofstock$outofstockcount');
+    //print('outofstock$outofstockcount');
     try{
       final productList = http.MultipartRequest('POST',Uri.parse('${Util.baseurl}promocode.php'));
       productList.fields['userid']=userid;
@@ -218,7 +218,7 @@ class _CartBillingState extends State<CartBilling> {
                 child: TextButton(
                     onPressed: () async { 
                       available = await Util.getStringValuesSF('availability');
-                      print('status is : $available');
+                      //print('status is : $available');
                       if(available.toString() == '1' && outofstockcount == '0'){
                        Navigator.push(context, MaterialPageRoute(builder: (context)=>const DeliveryAddress()));
                       }

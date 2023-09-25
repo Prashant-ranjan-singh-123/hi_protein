@@ -153,10 +153,9 @@ class _DeliveryAddressState extends State<DeliveryAddress> {
                         width: MediaQuery.of(context).size.width * 0.60,
                         child: InkWell(
                           onTap: () {
-                            print('deliveryaddress :${c.delAddress.value}');
+                            //print('deliveryaddress :${c.delAddress.value}');
                             if (c.delAddress.value == '') {
-                              Util.customDialog('Info',
-                                  'Please Select Delivery Address', context);
+                              Util.customDialog('Info','Please Select Delivery Address', context);
                             } else {
                               checkShipment();
                               //createRequest();

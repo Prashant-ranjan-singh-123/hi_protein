@@ -71,7 +71,6 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-
   Widget checkConnection() {
     return Consumer<ConnectivityProvider>(
       builder: (consumerContext, model, child) {
@@ -79,7 +78,6 @@ class _HomeScreenState extends State<HomeScreen> {
       },
     );
   }
-
   page() {
     return const ProductItems();
   }

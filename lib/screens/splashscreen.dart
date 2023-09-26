@@ -20,7 +20,7 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 class _SplashScreenState extends State<SplashScreen> {
-  String versionAndroid = '1.0.5';
+  String versionAndroid = '1.0.6';
   String versionIOS='1.0.5';
   @override
   void initState() {

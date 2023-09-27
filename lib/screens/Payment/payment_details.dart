@@ -555,7 +555,7 @@ class _PaymentDetailsState extends State<PaymentDetails> {
       'tid': sentId,
       'merchant_id': payKeys[0].keyId,
       'order_id': orderID.toString(),
-      'amount': '10',//c.checkOutPrice.toString(),
+      'amount': c.checkOutPrice.toString(),
       'currency': 'INR',
       'redirect_url': "https://redbag.vensframe.com/app/ccavenueResponse.php",
       'cancel_url': "https://redbag.vensframe.com/app/ccavenueResponse.php",

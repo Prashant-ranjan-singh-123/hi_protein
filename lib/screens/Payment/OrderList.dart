@@ -34,7 +34,6 @@ class _MyOrdersListState extends State<MyOrdersList> {
     super.initState();
     getData();
   }
-
   getData() async {
     orders = [];
     String userid = await Util.getStringValuesSF('userid');

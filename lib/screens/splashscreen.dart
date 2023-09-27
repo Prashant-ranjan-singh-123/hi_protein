@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hi_protein/screens/Home/HomeScreen.dart';
 import 'package:http/http.dart' as http;
+import 'package:upgrader/upgrader.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:io';
 
@@ -20,8 +21,8 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 class _SplashScreenState extends State<SplashScreen> {
-  String versionAndroid = '1.0.6';
-  String versionIOS='1.0.5';
+  String versionAndroid = '1.0.7';
+  String versionIOS='1.0.6';
   @override
   void initState() {
     checkLogin();
@@ -36,16 +37,16 @@ class _SplashScreenState extends State<SplashScreen> {
   }
   checkVersion()async{
     final response = await http.get(Uri.parse('${Util.baseurl}appupdate.php'));
-   // print('app update response is :${response.body}');
     try{
       if(response.statusCode==200){
         var deco = jsonDecode(response.body);
         if(Platform.isAndroid){
-          if(versionAndroid==deco['version']){
-            checking();//deco['version']
+          if(deco['version']==versionAndroid){
+            checking();
           }
           else{
-            showDialog(context: context,
+            // ignore: use_build_context_synchronously
+            /*showDialog(context: context,
                 builder: (_)=>AlertDialog(
                   title: Text(deco['title'],style: Util.txt(Palette.black, 16, FontWeight.w600),),
                   content: Text(deco['message'],style: Util.txt(Palette.black, 14, FontWeight.w400),),
@@ -55,11 +56,11 @@ class _SplashScreenState extends State<SplashScreen> {
                       checking();
                     }, child: Text('IGNORE',style: Util.txt(Palette.black, 16, FontWeight.w500),)):Container(),
                     deco['priority']!='maintenance'? TextButton(onPressed: (){
-                      String url ='https://play.google.com/store/apps/details?id=com.hiprotein.hiprotein';
-                      _launchURL(url);
+                     // String url ='https://play.google.com/store/apps/details?id=com.hiprotein.hiprotein';
+                     // _launchURL(url);
                     }, child: Text('UPDATE NOW',style: Util.txt(Palette.black, 16, FontWeight.w500),)):Container(),
                   ],
-                ));
+                ));*/
           }
         }
         else if(Platform.isIOS){
@@ -67,30 +68,29 @@ class _SplashScreenState extends State<SplashScreen> {
             checking();
           }
           else{
-            showCupertinoDialog(context: context,
+            // ignore: use_build_context_synchronously
+           /* showCupertinoDialog(context: context,
                 builder: (_)=>CupertinoAlertDialog(
                   title: Text(deco['title'],style: Util.txt(Palette.black, 16, FontWeight.w600),),
                   content: Text(deco['messageIOS'],style: Util.txt(Palette.black, 14, FontWeight.w400),),
                   actions: [
-                    deco['priorityIOS']=='low'?TextButton(onPressed: (){
+                    deco['priority']=='low'?TextButton(onPressed: (){
                       Navigator.pop(context);
                       checking();
                     }, child: Text('IGNORE',style: Util.txt(Palette.black, 16, FontWeight.w500),)):Container(),
-                    deco['priorityIOS']!='maintenance'?TextButton(onPressed: (){
+                    deco['priority']!='maintenance'?TextButton(onPressed: (){
                       String url ='https://apps.apple.com/us/app/hi-protein/id6450906125';
                       _launchURL(url);
                     }, child: Text('UPDATE NOW',style: Util.txt(Palette.black, 16, FontWeight.w500),)):Container(),
                   ],
-                ));
+                ));*/
 
           }
-        }
-        else if(Platform.isMacOS){
-          checking();
         }
       }
     }catch(e){}
   }
+
   _launchURL(String url) async {
     if (await canLaunchUrl(Uri.parse(url))) {
       await launchUrl(Uri.parse(url));
@@ -103,8 +103,7 @@ class _SplashScreenState extends State<SplashScreen> {
     nav();
   }
   nav() {
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => const HomeScreen()));
+    Navigator.push(context,MaterialPageRoute(builder: (context) => const HomeScreen()));
   }
   fcm() {
     FirebaseMessaging.instance
@@ -158,31 +157,38 @@ class _SplashScreenState extends State<SplashScreen> {
       ),
     );
   }
-  
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Palette.white,
-      body: Column(
-        children: [
-          Expanded(
-            child: Center(
-              child: Image.asset(Images.logo),
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
-                child: Text(
-                  'powered by veramasa',
-                  style: Util.txt(Palette.black, 18, FontWeight.w500),
-                ),
+    return UpgradeAlert(
+      upgrader: Upgrader(
+        canDismissDialog: false,
+        showLater: false,
+        showIgnore: false,
+        showReleaseNotes: false
+      ),
+      child: Scaffold(
+        backgroundColor: Palette.white,
+        body: Column(
+          children: [
+            Expanded(
+              child: Center(
+                child: Image.asset(Images.logo),
               ),
-            ],
-          ),
-        ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
+                  child: Text(
+                    'powered by veramasa',
+                    style: Util.txt(Palette.black, 18, FontWeight.w500),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -355,7 +355,7 @@ class _ProfileState extends State<Profile> {
                         ListTile(
                           leading: const Icon(MaterialCommunityIcons.truck_outline),
                           title: Text(
-                            'shipping and delivery',
+                            'Shipping and Delivery',
                             style: Util.txt(Palette.black, 14, FontWeight.w500),
                           ),
                           trailing: Icon(showCont1

@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hi_protein/screens/Home/HomeScreen.dart';
 import 'package:http/http.dart' as http;
-import 'package:upgrader/upgrader.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:io';
 
@@ -21,8 +20,6 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 class _SplashScreenState extends State<SplashScreen> {
-  String versionAndroid = '1.0.7';
-  String versionIOS='1.0.6';
   @override
   void initState() {
     checkLogin();
@@ -37,16 +34,17 @@ class _SplashScreenState extends State<SplashScreen> {
   }
   checkVersion()async{
     final response = await http.get(Uri.parse('${Util.baseurl}appupdate.php'));
+   // print("Response status: ${response.statusCode}");
     try{
       if(response.statusCode==200){
         var deco = jsonDecode(response.body);
         if(Platform.isAndroid){
-          if(deco['version']==versionAndroid){
+          if(deco['version']=='2.0.1'){
             checking();
           }
           else{
             // ignore: use_build_context_synchronously
-            /*showDialog(context: context,
+            showDialog(context: context,
                 builder: (_)=>AlertDialog(
                   title: Text(deco['title'],style: Util.txt(Palette.black, 16, FontWeight.w600),),
                   content: Text(deco['message'],style: Util.txt(Palette.black, 14, FontWeight.w400),),
@@ -56,20 +54,20 @@ class _SplashScreenState extends State<SplashScreen> {
                       checking();
                     }, child: Text('IGNORE',style: Util.txt(Palette.black, 16, FontWeight.w500),)):Container(),
                     deco['priority']!='maintenance'? TextButton(onPressed: (){
-                     // String url ='https://play.google.com/store/apps/details?id=com.hiprotein.hiprotein';
-                     // _launchURL(url);
+                      String url ='https://play.google.com/store/apps/details?id=com.hiprotein.hiprotein';
+                      _launchURL(url);
                     }, child: Text('UPDATE NOW',style: Util.txt(Palette.black, 16, FontWeight.w500),)):Container(),
                   ],
-                ));*/
+                ));
           }
         }
         else if(Platform.isIOS){
-          if(deco['versionIOS']==versionIOS){
+          if(deco['versionIOS']=='2.0.0'){
             checking();
           }
           else{
             // ignore: use_build_context_synchronously
-           /* showCupertinoDialog(context: context,
+            showCupertinoDialog(context: context,
                 builder: (_)=>CupertinoAlertDialog(
                   title: Text(deco['title'],style: Util.txt(Palette.black, 16, FontWeight.w600),),
                   content: Text(deco['messageIOS'],style: Util.txt(Palette.black, 14, FontWeight.w400),),
@@ -83,8 +81,7 @@ class _SplashScreenState extends State<SplashScreen> {
                       _launchURL(url);
                     }, child: Text('UPDATE NOW',style: Util.txt(Palette.black, 16, FontWeight.w500),)):Container(),
                   ],
-                ));*/
-
+                ));
           }
         }
       }
@@ -159,14 +156,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
   @override
   Widget build(BuildContext context) {
-    return UpgradeAlert(
-      upgrader: Upgrader(
-        canDismissDialog: false,
-        showLater: false,
-        showIgnore: false,
-        showReleaseNotes: false
-      ),
-      child: Scaffold(
+    return Scaffold(
         backgroundColor: Palette.white,
         body: Column(
           children: [
@@ -189,7 +179,6 @@ class _SplashScreenState extends State<SplashScreen> {
             ),
           ],
         ),
-      ),
-    );
+      );
   }
 }

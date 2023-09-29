@@ -19,7 +19,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0.6</string>
+	<string>2.0.0</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
@@ -34,15 +34,15 @@
 		<true/>
 	</dict>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>This app requires location access to function properly.</string>
+	<string>Hi Protein app needs access to location when in the background to get user location for delivery purpose, this app is e-commerce meat selling app for delivery purpose and tracking the location of delivery person.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>This app needs access to location when in the background</string>
+	<string>Hi Protein app needs access to location when in the background to get user location for delivery purpose, this app is e-commerce meat selling app for delivery purpose and tracking the location of delivery person.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>This app needs access to location when open.
+	<string>Hi Protein app needs access to location when open.
 &lt;key&gt;NSLocationAlwaysUsageDescription&lt;/key&gt;
 &lt;string&gt;This app needs access to location when in the background.&lt;/string&gt;</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>This app requires access to the photo library.</string>
+	<string>Hi Protein app requires access to the photo library.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIBackgroundModes</key>

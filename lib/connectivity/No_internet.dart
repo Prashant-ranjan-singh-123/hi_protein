@@ -1,15 +1,9 @@
-
 import 'package:flutter/material.dart';
-
 import '../utilities/constants.dart';
 import '../utilities/palette.dart';
 
-
-
-
-class NoInternet extends StatelessWidget {
+class NoInternet extends StatelessWidget{
   const NoInternet({super.key});
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,3 +13,4 @@ class NoInternet extends StatelessWidget {
     );
   }
 }
+

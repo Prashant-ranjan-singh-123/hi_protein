@@ -24,7 +24,6 @@ class DeliveryAddress extends StatefulWidget {
   @override
   _DeliveryAddressState createState() => _DeliveryAddressState();
 }
-
 class _DeliveryAddressState extends State<DeliveryAddress> {
   final GlobalKey<ScaffoldState> _scafoldkey = GlobalKey<ScaffoldState>();
   List<AddressModel> adresList = [];
@@ -469,7 +468,7 @@ class _DeliveryAddressState extends State<DeliveryAddress> {
     }
   }
 
-  confirmation(String id) {
+  confirmation(String id){
     showAnimatedDialog(
       context: context,
       barrierDismissible: true,

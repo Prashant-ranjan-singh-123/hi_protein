@@ -19,11 +19,9 @@ import 'ProductList.dart';
 
 class ProductItems extends StatefulWidget {
   const ProductItems({Key? key}) : super(key: key);
-
   @override
   _ProductItemsState createState() => _ProductItemsState();
 }
-
 class _ProductItemsState extends State<ProductItems> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final ScrollController _controllerOne = ScrollController();
@@ -41,8 +39,7 @@ class _ProductItemsState extends State<ProductItems> {
     _controllerOne.addListener(lazyLoading);
     Future.delayed(const Duration(seconds: 1)).then((value) => deliveryavailabilitymethod());
   }
-
-  getImages() async {
+  getImages()async{
     deliveraddress = await Util.getStringValuesSF('deliverto');
     //print('deliveraddress :$deliveraddress');
     carousel = [];
@@ -59,18 +56,18 @@ class _ProductItemsState extends State<ProductItems> {
           catImg.addAll(dec['catlist']);
         }
       }
-    } catch (e) {
+    } catch(e){
       Util.logDebug(e);
     }
-    if (mounted) {
+    if(mounted) {
       setState(() {});
     }
   }
-  getData() async {
+  getData() async{
     category = [];
     category1 = [];
     count = 1;
-    Map<String, String> map = {'client': Util.clientName};
+    Map<String, String> map = {'client':Util.clientName};
     http.Response response = await http
         .post(Uri.parse('${Util.baseurl}category.php'), body: jsonEncode(map));
     try {

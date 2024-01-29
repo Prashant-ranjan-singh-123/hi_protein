@@ -551,7 +551,7 @@ class _PaymentDetailsState extends State<PaymentDetails> {
     //print(widget.amount);
     var url = "https://redbag.vensframe.com/app/ccavenueRequest.php";
     Uri uri = Uri.parse(url);
-    var res = await http.post(uri, body: {
+    var res = await http.post(uri,body:{
       'tid': sentId,
       'merchant_id': payKeys[0].keyId,
       'order_id': orderID.toString(),
@@ -575,9 +575,9 @@ class _PaymentDetailsState extends State<PaymentDetails> {
       var jsonData = jsonDecode(res.body);
       encryptedstring = jsonData['encryptdata'];
       accesscodestring = jsonData['access'];
-     // print('jsonData: $jsonData');
-     // print('encryptdata: ${jsonData['encryptdata']}');
-     // print('access: ${jsonData['access']}');
+      print('jsonData: $jsonData');
+      print('encryptdata: ${jsonData['encryptdata']}');
+      print('access: ${jsonData['access']}');
       navigate();
       // print('accesscode:$accesscodestring');
       return jsonData;
@@ -604,7 +604,7 @@ class _PaymentDetailsState extends State<PaymentDetails> {
                 )));
   }
 
-  void openCheckout() async {
+  void openCheckout()async{
     String userid = await Util.getStringValuesSF('userid');
     // String email = await Util.getStringValuesSF('email');
     // String mobile = await Util.getStringValuesSF('mobile');
@@ -615,27 +615,25 @@ class _PaymentDetailsState extends State<PaymentDetails> {
       'payment_capture': 1,
       'order_id': sentId,
       // 'timeout': 180,
-      'prefill': {'contact': mobile, 'email': email},
+      'prefill': {'contact':mobile,'email':email},
       'external': {
         'wallets': ['paytm']
       }
     };
-
-    try {
+    try{
       _razorpay.open(options);
     } catch (e) {
-      Map<String, String> map = {
+      Map<String, String> map={
         'email': userid,
         'instance': 'payment error',
         'error': e.toString()
       };
       var response = await http.post(Uri.parse('${Util.baseurl}logs.php'),
           body: jsonEncode(map));
-      if (response.statusCode == 200) {}
+      if (response.statusCode == 200){}
     }
   }
-
-  void updata() async {
+  void updata()async{
     Util.showProgress(context);
     String tempo;
     String userid = await Util.getStringValuesSF('userid');
@@ -687,38 +685,32 @@ class _PaymentDetailsState extends State<PaymentDetails> {
     } catch (e) {
       print('error ---- $e');
       // Util.dismissDialog(_scaffoldkey.currentContext!);
-      Map<String, String> map = {
-        'email': userid,
-        'instance': 'orderdata Insertion',
-        'error': e.toString()
+      Map<String, String> map={
+        'email':userid,
+        'instance':'orderdata Insertion',
+        'error':e.toString()
       };
       var respo = await http.post(Uri.parse('${Util.baseurl}logs.php'),
           body: jsonEncode(map));
       if (respo.statusCode == 200) {}
     }
   }
-
   showDlog(String message) {
     showAnimatedDialog(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
         return ClassicGeneralDialogWidget(
-          titleText: 'Payment Success',
-          contentText: message,
+          titleText:'Payment Success',
+          contentText:message,
           actions: [
             TextButton(
-                onPressed: () {
+                onPressed:(){
                   Navigator.pop(context);
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const MyOrdersList()));
+                  Navigator.push(context,MaterialPageRoute(
+                          builder:(context)=> const MyOrdersList()));
                 },
-                child: Text(
-                  'Ok',
-                  style: Util.txt(Palette.black, 16, FontWeight.w600),
-                )),
+                child:Text('Ok',style:Util.txt(Palette.black,16,FontWeight.w600),)),
           ],
         );
       },

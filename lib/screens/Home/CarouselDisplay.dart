@@ -4,16 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:getwidget/components/carousel/gf_carousel.dart';
 import '../../utilities/palette.dart';
 
-class CarouselDisplay extends StatefulWidget {
-  const CarouselDisplay({Key? key, required this.image}) : super(key: key);
+class CarouselDisplay extends StatefulWidget{
+  const CarouselDisplay({Key? key, required this.image}):super(key:key);
   final List image;
   @override
   _CarouselDisplayState createState() => _CarouselDisplayState();
 }
-
-class _CarouselDisplayState extends State<CarouselDisplay> {
+class _CarouselDisplayState extends State<CarouselDisplay>{
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context){
     return GFCarousel(
       items: widget.image.map(
             (url) {
@@ -34,10 +33,7 @@ class _CarouselDisplayState extends State<CarouselDisplay> {
       scrollPhysics: widget.image.length>1?const ScrollPhysics():const NeverScrollableScrollPhysics(),
       activeIndicator: Colors.black,
       passiveIndicator: Palette.background,
-      onPageChanged: (index) {
-        setState(() {
-          index;
-        });
+      onPageChanged:(index){setState((){index;});
       },
     );
   }

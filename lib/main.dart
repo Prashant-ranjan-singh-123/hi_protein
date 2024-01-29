@@ -31,17 +31,15 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
   await setupFlutterNotifications();
 }
-
 /// Create a [AndroidNotificationChannel] for heads up notifications
 const AndroidNotificationChannel channel = AndroidNotificationChannel(
   'high_importance_channel', // id
   'High Importance Notifications', // title
-  description:
-      'This channel is used for important notifications.', // description
+  description:'This channel is used for important notifications.', // description
   importance: Importance.max,
 );
 
-bool isFlutterLocalNotificationsInitialized = false;
+bool isFlutterLocalNotificationsInitialized=false;
 
 Future<void> setupFlutterNotifications() async {
   if (isFlutterLocalNotificationsInitialized) {
@@ -49,7 +47,6 @@ Future<void> setupFlutterNotifications() async {
   }
 
   /// Create an Android Notification Channel.
-  ///
   /// We use this channel in the `AndroidManifest.xml` file to override the
   /// default FCM channel to enable heads up notifications.
   await flutterLocalNotificationsPlugin
@@ -76,8 +73,7 @@ Future<void> setupFlutterNotifications() async {
   isFlutterLocalNotificationsInitialized = true;
 }
 
-final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-    FlutterLocalNotificationsPlugin();
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 FirebaseMessaging messaging = FirebaseMessaging.instance;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -90,8 +86,7 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-  // This widget is the root of your application.
+  const MyApp({Key? key}):super(key:key);
   @override
   Widget build(BuildContext context) {
     return MultiProvider(

@@ -14,13 +14,11 @@ import 'package:flutter_google_places_hoc081098/flutter_google_places_hoc081098.
 import 'package:http/http.dart' as http;
 import '../screens/Home/HomeScreen.dart';
 
-class MyMapPicker extends StatefulWidget {
-  const MyMapPicker({Key? key}) : super(key: key);
-
+class MyMapPicker extends StatefulWidget{
+  const MyMapPicker({Key? key}) : super(key:key);
   @override
   State createState() => _MyMapPickerState();
 }
-
 class _MyMapPickerState extends State<MyMapPicker> {
   String googleApikey = "AIzaSyDY8p6whIPad6UA7-8DbD0wb_UdsYDjnKA";
   String locationaddress = "Search Address", latString = '', longString = '';
@@ -28,10 +26,10 @@ class _MyMapPickerState extends State<MyMapPicker> {
   MapPickerController mapPickerController = MapPickerController();
   bool servicestatus = false, haspermission = false;
   CameraPosition cameraPosition = const CameraPosition(
-    target: LatLng(17.441536719386637, 78.50424601903342),
+    target: LatLng(17.441536719386637,78.50424601903342),
     zoom: 20,
   );
-  var textController = TextEditingController();
+  var textController=TextEditingController();
   @override
   void initState() {
     getLocation();

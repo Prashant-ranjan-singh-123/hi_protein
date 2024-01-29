@@ -99,7 +99,6 @@ class _CartListState extends State<CartList> {
       });
     }
   }
-
   Future<bool> _onWillPop() async {
     return (await showDialog(
           context: context,

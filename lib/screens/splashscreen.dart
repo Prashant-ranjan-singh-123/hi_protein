@@ -87,7 +87,6 @@ class _SplashScreenState extends State<SplashScreen> {
       }
     }catch(e){}
   }
-
   _launchURL(String url) async {
     if (await canLaunchUrl(Uri.parse(url))) {
       await launchUrl(Uri.parse(url));

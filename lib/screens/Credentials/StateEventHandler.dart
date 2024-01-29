@@ -36,6 +36,8 @@ class LifecycleEventHandler extends WidgetsBindingObserver {
        // print('in background');
         timer?.cancel();
         break;
+      case AppLifecycleState.hidden:
+        // TODO: Handle this case.
     }
   }
   checkForStatusMethod() {
@@ -66,7 +68,6 @@ class LifecycleEventHandler extends WidgetsBindingObserver {
             Util.addStringToSF('availabl', dec['available'].toString(),'');
             isavailable = false;
             alert();
-            
             //showAlertDialog();
           }
         }
@@ -76,11 +77,10 @@ class LifecycleEventHandler extends WidgetsBindingObserver {
       Util.logDebug(e);
     }
   }
-  void alert() {
+  void alert(){
    SnackBar snackBar = const SnackBar(content: Text("sorry, we are not accepting orders at this moment"));
    snackbarKey.currentState?.showSnackBar(snackBar); 
   }
-
   void showAlertDialog() {
     showDialog(
       barrierDismissible: false,

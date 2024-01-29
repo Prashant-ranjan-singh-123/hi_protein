@@ -36,7 +36,7 @@ class _MyOrdersListState extends State<MyOrdersList> {
   }
   getData() async {
     orders = [];
-    String userid = await Util.getStringValuesSF('userid');
+    String userid =await Util.getStringValuesSF('userid');
     try {
       final productList = http.MultipartRequest(
           'POST', Uri.parse('${Util.baseurl}orderslist.php'));
@@ -48,8 +48,8 @@ class _MyOrdersListState extends State<MyOrdersList> {
       if (response.statusCode == 200) {
         var dec = jsonDecode(response.body);
         //print(dec);
-        if (dec['success']) {
-          orders = List<OrderListModel>.from(
+        if (dec['success']){
+          orders=List<OrderListModel>.from(
               dec['data'].map((i) => OrderListModel.fromJson(i)));
         }
       }

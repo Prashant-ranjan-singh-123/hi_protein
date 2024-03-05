@@ -263,7 +263,6 @@ class Util {
       updateToken.fields['token'] = fcmToken;
       updateToken.fields['userid'] = userid;
       updateToken.fields['client'] = clientName;
-      //print(updateToken.fields);
       final respo = await updateToken.send();
       final response = await http.Response.fromStream(respo);
       try {
@@ -306,7 +305,7 @@ class Util {
   //--------------------------- debug -----------------------------------------
   static logDebug(Object a) {
     if (kDebugMode) {
-      print(a);
+      //print(a);
     }
   }
 ////////------------------------- End-----------------------------------------

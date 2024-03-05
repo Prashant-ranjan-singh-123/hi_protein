@@ -47,7 +47,6 @@ class _ProductListState extends State<ProductList> {
       final response = await http.Response.fromStream(snd);
       if(response.statusCode==200){
          var dec = jsonDecode(response.body);
-         //print(dec);
          if(dec['data'].length == 0){loader = false;}
          for(int i=0;i<dec['data'].length;i++){
            prodList.add(ProductModel(name: dec['data'][i]['name'], image: dec['data'][i]['image'], uuid: dec['data'][i]['uuid'], count: dec['data'][i]['count'],
@@ -104,7 +103,7 @@ class _ProductListState extends State<ProductList> {
       builder: (consumerContext, model, child) {
         return model.isOnline
             ? page()
-            : NoInternet();
+            : const NoInternet();
       },
     );
   }
@@ -225,7 +224,6 @@ class _ProductListState extends State<ProductList> {
                                                   // ),
                                                   child: OutlinedButton(onPressed: () async {
                                                     String userid = await Util.getStringValuesSF('userid');
-                                                    //print('user id $userid');
                                                     available = await Util.getStringValuesSF('availability');
                                                       if(available.toString() == '1') {
                                                         onlineCart(prodList[i].uuid, i, 1);

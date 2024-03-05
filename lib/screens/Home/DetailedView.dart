@@ -54,7 +54,6 @@ class _DetailedViewState extends State<DetailedView> {
       final response = await http.Response.fromStream(snd);
       if(response.statusCode==200){
         var dec = jsonDecode(response.body);
-        //print('detailview:$dec');
         if (dec['success']) {
           for (int i = 0; i < dec['data'].length; i++) {
             carousel.add(dec['data'][i]['image']);
@@ -246,7 +245,6 @@ class _DetailedViewState extends State<DetailedView> {
                                 child: OutlinedButton(onPressed: () async {
                                   String userid = await Util.getStringValuesSF('userid');
                                   available = await Util.getStringValuesSF('availability');
-                                  //print('status is : $available');
                                   if(available.toString() == '1') {
                                     onlineCart(prodList[0].uuid, 0, 1);
                                   }else{if(userid==''||userid.toString()=='null'){Util.showLoginPop(_scaffoldkey.currentContext!,'Please Login to continue...',{'nav':0,'name':widget.name,'state':widget.state});return;};Util.customDialog('sorry, we are not accepting orders at this moment','',context);}

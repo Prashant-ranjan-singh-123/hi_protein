@@ -95,7 +95,6 @@ class _MapSearchPlacesState extends State<MapSearchPlaces> {
                 );
                 latString = cameraPosition.target.latitude.toString();
                 longString = cameraPosition.target.longitude.toString();
-                print('$latString,$longString');
                 Placemark place = placemarks[0];
                 //Name:${place.name}, Street:${place.street}, sub locality:${place.subLocality}, locality:${place.locality}, postal code:${place.postalCode}
                 // update the ui with the address
@@ -118,16 +117,13 @@ class _MapSearchPlacesState extends State<MapSearchPlaces> {
                           types: [],
                           strictbounds: false,
                           components: [Component(Component.country, 'in')],
-                          onError: (err){
-                             print(err);
-                          }
+                          onError: (err){}
                       );
                    if(place != null){
                         setState(() {
                           locationaddress = place.description.toString();
                           //textController.text = locationaddress;
                           orderStringMethod();
-                          print('address1:$locationaddress');
                         });
                        final plist = GoogleMapsPlaces(apiKey:googleApikey,
                               apiHeaders: await const GoogleApiHeaders().getHeaders(),
@@ -202,12 +198,8 @@ class _MapSearchPlacesState extends State<MapSearchPlaces> {
                   ),
                 ),
                 onPressed: () {
-                 // print("Location ${cameraPosition.target.latitude} ${cameraPosition.target.longitude}");
-                 // print("Address: ${textController.text}");
                   latString = cameraPosition.target.latitude.toString();
                   longString = cameraPosition.target.longitude.toString();
-                 // print('latitude:$latString');
-                //  print('longitude:$longString');
                   shipmentCheck();
                 },
                 style: ButtonStyle(
@@ -230,10 +222,8 @@ class _MapSearchPlacesState extends State<MapSearchPlaces> {
     Position res = await Geolocator.getCurrentPosition();
     latString = res.latitude.toString();
     longString = res.longitude.toString();
-    //print('latandlong: $latString,$longString');
     List<Placemark> placemarks = await placemarkFromCoordinates(res.latitude, res.longitude);
         locationaddress = placemarks.first.street.toString() + "," + placemarks.first.locality.toString() + "," + placemarks.first.administrativeArea.toString() + "," + placemarks.first.postalCode.toString();
-       // print('place is :$location');
        /* var personInfoString = '$latString,$longString';
         Util.addStringToSF('latlang', personInfoString, '');
         Util.addStringToSF('latvalue', latString, '');
@@ -267,7 +257,6 @@ class _MapSearchPlacesState extends State<MapSearchPlaces> {
       longString = res.longitude.toString();
       List<Placemark> placemarks = await placemarkFromCoordinates(res.latitude, res.longitude);
         locationaddress = placemarks.first.street.toString() + "," + placemarks.first.locality.toString() + "," + placemarks.first.administrativeArea.toString() + "," + placemarks.first.postalCode.toString();
-       // print('place is :$location');
        /* var personInfoString = '$latString,$longString';
         Util.addStringToSF('latlang', personInfoString, '');
         Util.addStringToSF('latvalue', latString, '');
@@ -278,7 +267,6 @@ class _MapSearchPlacesState extends State<MapSearchPlaces> {
         //showToast('Access granted');
       }
     } else {
-      //print("GPS Service is not enabled, turn on GPS location");
     }
    // setState(() {});
   }

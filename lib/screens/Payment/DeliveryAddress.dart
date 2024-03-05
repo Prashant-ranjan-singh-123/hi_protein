@@ -56,8 +56,6 @@ class _DeliveryAddressState extends State<DeliveryAddress> {
       productList.fields['userid'] = userid;
       productList.fields['client'] = Util.clientName;
       final snd = await productList.send();
-     // print('fields :${productList.fields['userid']}');
-     // print('fields1 :${productList.fields}');
       final response = await http.Response.fromStream(snd);
       if (response.statusCode == 200) {
         var dec = jsonDecode(response.body);
@@ -76,13 +74,6 @@ class _DeliveryAddressState extends State<DeliveryAddress> {
                 latitude: dec['data'][i]['lat'],
                 longitude: dec['data'][i]['lng']));
             selLoc.add(false);
-           /* print({dec['data'][i]['firstname']});
-            print({dec['data'][i]['lastname']});
-            print({dec['data'][i]['address']});
-            print({dec['data'][i]['city']});
-            print({dec['data'][i]['state']});
-            print({dec['data'][i]['pincode']});
-            print({dec['data'][i]['country']});*/
           }
           if (dec['contactus'].length > 0) {
             contactUs.add(ContactUsModel(
@@ -152,7 +143,6 @@ class _DeliveryAddressState extends State<DeliveryAddress> {
                         width: MediaQuery.of(context).size.width * 0.60,
                         child: InkWell(
                           onTap: () {
-                            //print('deliveryaddress :${c.delAddress.value}');
                             if (c.delAddress.value == '') {
                               Util.customDialog('Info','Please Select Delivery Address', context);
                             } else {
@@ -415,7 +405,7 @@ class _DeliveryAddressState extends State<DeliveryAddress> {
                 )));
   }
 
-  manage(int a) {
+  manage(int a){
     c.delAddress.value = adresList[a].address;
     c.delMobile.value = adresList[a].mobile;
     c.latitude.value = adresList[a].latitude;
@@ -436,7 +426,6 @@ class _DeliveryAddressState extends State<DeliveryAddress> {
       }
     });
   }
-
   checkShipment() async {
     Util.showProgress(context);
    // String latvalue = await Util.getStringValuesSF('latvalue');
@@ -450,7 +439,7 @@ class _DeliveryAddressState extends State<DeliveryAddress> {
     var response = await http.Response.fromStream(res);
     Util.logDebug('deliver response: $response');
     try {
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200){
         Util.dismissDialog(_scafoldkey.currentContext!);
         var dec = jsonDecode(response.body);
         Util.logDebug('deliver response1: $dec');
@@ -524,7 +513,6 @@ class _DeliveryAddressState extends State<DeliveryAddress> {
       }
     } catch (e) {
       Util.dismissDialog(_scafoldkey.currentContext!);
-      print(e.toString());
     }
     getData();
   }
@@ -601,7 +589,6 @@ class _DeliveryAddressState extends State<DeliveryAddress> {
     stam = respon.statusCode.toString();
     try {
       if (respon.statusCode == 200) {
-        // print(jsonDecode(respon.body));
       } else {
         Map<String, String> map = {
           'email': userid,

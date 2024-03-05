@@ -43,18 +43,14 @@ class _OrderDetailViewState extends State<OrderDetailView> {
       productList.fields['userid']=userid;
       productList.fields['client']=Util.clientName ;
       productList.fields['id']=widget.share['id'];
-      //print(productList);
-      //print(productList.fields);
       final snd = await productList.send();
       final response = await http.Response.fromStream(snd);
       if(response.statusCode==200){
         var dec = jsonDecode(response.body);
-       // print(dec);
         if(dec['success']){
           orders=List<OrderDetails>.from(dec['data'].map((i)=>OrderDetails.fromJson(i)));
           shipmentActivities.addAll(dec['data'][0]['shipment_track_activities']);
           orderstatus = dec['data'][0]['status'];
-         // print('orderstatus: $orders');
         }
       }
     }catch(e){Util.logDebug(e);}

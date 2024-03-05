@@ -42,12 +42,10 @@ class _MyOrdersListState extends State<MyOrdersList> {
           'POST', Uri.parse('${Util.baseurl}orderslist.php'));
       productList.fields['userid'] = userid;
       productList.fields['client'] = Util.clientName;
-      //print(productList.fields);
       final snd = await productList.send();
       final response = await http.Response.fromStream(snd);
       if (response.statusCode == 200) {
         var dec = jsonDecode(response.body);
-        //print(dec);
         if (dec['success']){
           orders=List<OrderListModel>.from(
               dec['data'].map((i) => OrderListModel.fromJson(i)));
@@ -109,7 +107,6 @@ class _MyOrdersListState extends State<MyOrdersList> {
       },
     );
   }
-
   page() {
     return orders.isNotEmpty
         ? Padding(

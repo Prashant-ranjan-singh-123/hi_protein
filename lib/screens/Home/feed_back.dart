@@ -200,6 +200,7 @@ class _FeedBackScreenState extends State<FeedBackScreen> {
         Util.dismissDialog(_scaffoldkey.currentContext!);
         var decodd = jsonDecode(repo.body);
         if (decodd['message'] == 'Success') {
+          // ignore: use_build_context_synchronously
           Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => const MyOrdersList()));
         }
@@ -208,7 +209,6 @@ class _FeedBackScreenState extends State<FeedBackScreen> {
       }
     } catch (e) {
       Util.dismissDialog(_scaffoldkey.currentContext!);
-      print(e.toString());
     }
   }
 }

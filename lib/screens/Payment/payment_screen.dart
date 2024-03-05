@@ -25,7 +25,6 @@ final Set<JavascriptChannel> jsChannels = {
   JavascriptChannel(
       name: 'Print',
       onMessageReceived: (JavascriptMessage message) {
-        print('message is :${message.message.toString()}');
       }), 
 };
 
@@ -135,50 +134,7 @@ class PaymentScreenState extends State<PaymentScreen> {
                     url.toString() == redirectUrl.toString()?redirectedAndroidMethod():'';
                     if(isloading == false){Util.dismissDialog(_scafoldkey.currentContext!);isloading = true;}},
                   onProgressChanged: (InAppWebViewController controller, int progress) {
-                    setState(() {this.progress = progress / 100;});},)/*WebView(
-                    initialUrl: url,
-                    javascriptMode: JavascriptMode.unrestricted,
-                    javascriptChannels: jsChannels,
-                    onWebViewCreated: (c) async {
-                      controller = c;
-                      setState(() {});
-                    },
-                    onPageFinished: (url) async {
-                      if(isloading == false){Util.dismissDialog(_scafoldkey.currentContext!);isloading = true;}
-                      print('redirect url:$url');
-                      if (url == redirectUrl) {
-                        // handleURLRedirect(url);
-                        if(isredirected == false){
-                          print('redirected1 message');
-                          //loadHtmlFromAssets();
-                          redirectUrlMethodAndroid();
-                          isredirected = true;
-                        }
-                      }
-                      else{print('redirect urlisnot:$url');}
-                      if (url == cancelUrl) {}
-                    },
-                    navigationDelegate: (NavigationRequest nav) async {
-                      print('urlis:$url');
-                      //if (nav.url == redirectUrl) {
-                        //if(isredirected == false){
-                          print('redirected message url:${nav.url}');
-                         // handleURLRedirect(nav.url);
-                          //loadHtmlFromAssets();
-                          redirectUrlMethodAndroid();
-                          //isredirected = true;
-                        //}
-                       /* return nav.url == url
-                            ? NavigationDecision.navigate
-                            : NavigationDecision.prevent;*/
-                        //return NavigationDecision.navigate;
-                     // }
-                      if (nav.url == cancelUrl) {
-                        return NavigationDecision.navigate;
-                      }
-                      return NavigationDecision.prevent;
-                    },
-                  )*/
+                    setState(() {this.progress = progress / 100;});},)
                 : Column(
                     children: [
                       Expanded(
@@ -190,57 +146,7 @@ class PaymentScreenState extends State<PaymentScreen> {
                     url.toString() == redirectUrl.toString()?redirectediOSMethod():'';
                     if(isloading == false){Util.dismissDialog(_scafoldkey.currentContext!);isloading = true;}},
                   onProgressChanged: (InAppWebViewController controller, int progress) {
-                    setState(() {this.progress = progress / 100;});},)/*WebView(
-                        javascriptMode: JavascriptMode.unrestricted,
-                        javascriptChannels: jsChannels,
-                        initialUrl: url,
-                        onWebViewCreated: (c) async {
-                          controller = c;
-                          setState(() {});
-                        },
-                        onPageFinished: (url) async {
-                          if(isloading == false){Util.dismissDialog(_scafoldkey.currentContext!);isloading = true;}
-                          if (url == redirectUrl) {
-                            if(isredirected == false){
-                              print('redirecturl');
-                              //loadHtmlFromAssets();
-                              redirectUrlMethodIos();
-                              isredirected = true;
-                            }
-                            // Uri uri = Uri.parse(redirectUrl);
-                            // var res = await http.post(uri);
-    
-                            // print(res);
-                            // handleURLRedirect(url);
-                            /*if (redirectUrl.contains("status")) {
-                              var token = redirectUrl.split("status")[1];
-                              print(token);
-                              //_prefs.setString('token', token);
-                            }*/
-                            //var htmlContent = await controller.runJavascript('window.document.getElementsByText');
-                            // Uri uri = Uri.parse(redirectUrl);
-                            // var res = await http.post(uri);
-                            //print(htmlContent);
-                            //var jsonData = jsonDecode(res.body);
-                            //redirectUrlMethod();
-                          }
-                          if (url == cancelUrl) {}
-                        },
-                        // onPageFinished: (String url) {
-                        //   SystemChannels.textInput.invokeMethod('TextInput.hide');
-                        //   if (url.contains(redirectUrl)) {
-                        //     print('nag');
-                        //     redirectUrlMethod();
-                        //   }
-                        //   // print('Page finished loading: $redirectUrl');
-                        // },
-                        // javascriptChannels: jsChannels,
-                        // onWebViewCreated: (c) async {
-                        //   print('created');
-                        //   controller = c;
-                        //   setState(() {});
-                        // },
-                      )*/)
+                    setState(() {this.progress = progress / 100;});},))
                     ],
                   )
             : (loadingMessage.isNotEmpty
@@ -281,16 +187,11 @@ class PaymentScreenState extends State<PaymentScreen> {
   }
   redirectUrlMethodIos() async {
     //String htmlContent = await controller.runJavascriptReturningResult('document.documentElement.outerHTML');
-   // print(htmlContent);
     //final parsedJson = parse(htmlContent);
     final parsedJson = parse(finalhtmlContent);
     var jsonData = parsedJson.body?.text;
-   // print('jsonData: $jsonData');
     webViewController.clearCache();
     final result = jsonDecode(jsonData!);
-   // print('result: $result');
-   // final jsonResponse = json.decode(formatHtmlString(result));
-   // print(jsonResponse);
     username = result['status'];
     for (String statusEntry in username) {
       if (statusEntry.startsWith('order_status=')) {
@@ -300,11 +201,6 @@ class PaymentScreenState extends State<PaymentScreen> {
         trackingidvalue = statusEntry.substring('tracking_id='.length);
       }
     }
-    /*if (orderstatus == 'Aborted' ||
-        orderstatus == 'Failure' ||
-        orderstatus == 'Invalid')*/
-    //  print('Order Status: $orderstatus');
-    //  print('tracking order: $trackingidvalue');
     if (orderstatus == 'Success') {
       updata();
     } else {
@@ -318,13 +214,10 @@ class PaymentScreenState extends State<PaymentScreen> {
   }
   redirectUrlMethodAndroid() async {
    // String htmlContent = await controller.runJavascriptReturningResult('document.documentElement.outerHTML');
-    //print('html content is:$htmlContent');
     final parsedJson = parse(finalhtmlContent);
     var jsonData = parsedJson.body?.text;
-    //print('jsondata:$jsonData');
     webViewController.clearCache();
     final result = jsonDecode(jsonData!);
-    //final jsonResponse = json.decode(formatHtmlString(result));
     username = result['status'];
     for (String statusEntry in username) {
       if (statusEntry.startsWith('order_status=')) {
@@ -334,8 +227,6 @@ class PaymentScreenState extends State<PaymentScreen> {
         trackingidvalue = statusEntry.substring('tracking_id='.length);
       }
     }
-     // print('Order Status: $orderstatus');
-    //  print('tracking order: $trackingidvalue');
     if (orderstatus == 'Success') {
       updata();
     } else {
@@ -348,13 +239,10 @@ class PaymentScreenState extends State<PaymentScreen> {
     try {
       var response = await http.post(Uri.parse(initialURL));
       if (response.statusCode == 200) {
-        print('Response1: ${response.body}');
       } else {
-        print('Error: ${response.statusCode}');
       }
-    } catch (e) {
-      print('Error: $e');
-    }
+    } catch (e){}
+    
   }
 
   String formatHtmlString(String string) {
@@ -417,7 +305,7 @@ class PaymentScreenState extends State<PaymentScreen> {
       'userid': userid,
       'address': widget.addressvalue,
       'totalamount': widget.totaltimevalue,
-      'tid': widget.tidvalue, //tid //Rpayorderid
+      'Rpayorderid': widget.tidvalue, //tid //Rpayorderid
       'status': status,
       'orderid': widget.orderidvalue,
       'client': Util.clientName
@@ -427,7 +315,6 @@ class PaymentScreenState extends State<PaymentScreen> {
     stam = respon.statusCode.toString();
     try {
       if (respon.statusCode == 200) {
-         print('sucess $status');
       } else {
         Map<String, String> map = {
           'email': userid,
@@ -436,8 +323,7 @@ class PaymentScreenState extends State<PaymentScreen> {
         };
         var response = await http.post(Uri.parse('${Util.baseurl}logs.php'),
             body: jsonEncode(map));
-        if (response.statusCode == 200) {
-          //print(status);
+        if (response.statusCode == 200){
         }
       }
     } catch (e) {
@@ -449,7 +335,6 @@ class PaymentScreenState extends State<PaymentScreen> {
       var response = await http.post(Uri.parse('${Util.baseurl}logs.php'),
           body: jsonEncode(map));
       if (response.statusCode == 200) {
-        //print(status);
       }
     }
   }
@@ -473,7 +358,6 @@ class PaymentScreenState extends State<PaymentScreen> {
       'eDate': widget.totaltimevalue, //widget.share['estimate_time'],
       'discount': widget.discountvalue
     };
-    //print('map $map');
     var respo = await http.post(Uri.parse('${Util.baseurl}placeorder.php'),
         body: jsonEncode(map));
     tempo = respo.statusCode.toString();
@@ -481,7 +365,6 @@ class PaymentScreenState extends State<PaymentScreen> {
       if (respo.statusCode == 200) {
         // Util.dismissDialog(_scaffoldkey.currentContext!);
         var decc = jsonDecode(respo.body);
-       // print('placeorder $decc');
         if (decc['success'] == 'true') {
           //showDlog(decc['message']);
           showResponseAlert1(decc['message']);
@@ -506,7 +389,6 @@ class PaymentScreenState extends State<PaymentScreen> {
         if (respo.statusCode == 200) {}
       }
     } catch (e) {
-      print('error ---- $e');
       // Util.dismissDialog(_scaffoldkey.currentContext!);
       Map<String, String> map = {
         'email': userid,

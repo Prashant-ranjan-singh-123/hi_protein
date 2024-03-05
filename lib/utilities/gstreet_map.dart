@@ -99,9 +99,7 @@ class _MyMapPickerState extends State<MyMapPicker> {
                 );
                 latString = cameraPosition.target.latitude.toString();
                 longString = cameraPosition.target.longitude.toString();
-                print('$latString,$longString');
                 Placemark place = placemarks[0];
-                print('placemarks: $place');
                 locationaddress = place.subLocality.toString() +
                     '${place.subLocality.toString().length == 0 ? '' : ','}' +
                     place.locality.toString() +
@@ -109,21 +107,18 @@ class _MyMapPickerState extends State<MyMapPicker> {
                     place.postalCode.toString();
                // textController.text ='Your order will be delivered here\nMove pin to your exact location.'; //place.locality.toString()+'${place.locality.toString().length==0?'':','}'+place.subLocality.toString()+'${place.subLocality.toString().length==0?'':','}'+place.postalCode.toString();
                 orderStringMethod(); 
-                print('location address: $locationaddress');
                 //Name:${place.name}, Street:${place.street}, sub locality:${place.subLocality}, locality:${place.locality}, postal code:${place.postalCode}
                 // update the ui with the address
                 // if(place.subLocality == ''){
-                //   print('text${place.locality},${place.postalCode}');
                 //   locationaddress = '${place.locality},${place.postalCode}';
                 // // textController.text ='${place.locality},${place.postalCode}';
                 // // locationaddress = '${place.subLocality},${place.locality},${place.postalCode}';//placemarks.first.street.toString() + "," + placemarks.first.locality.toString() + "," + placemarks.first.administrativeArea.toString() + "," + placemarks.first.postalCode.toString();
-                // // print('location address: $locationaddress');
                 // }
-                // else if(place.locality == ''){print('test');
+                // else if(place.locality == ''){
                 // locationaddress = '${place.subLocality},${place.postalCode}';}
-                // else if(place.postalCode == ''){print('test');
+                // else if(place.postalCode == ''){
                 // locationaddress = '${place.locality},${place.subLocality}';}
-                // else (){print('test');};
+                // else (){};
               },
             ),
           ),
@@ -143,14 +138,12 @@ class _MyMapPickerState extends State<MyMapPicker> {
                         strictbounds: false,
                         components: [Component(Component.country, 'in')],
                         onError: (err) {
-                          print(err);
                         });
                     if (place != null) {
                       setState(() {
                         locationaddress = place.description.toString();
                         //textController.text = locationaddress;
                         orderStringMethod();
-                        print('address1:$locationaddress');
                       });
                       final plist = GoogleMapsPlaces(
                         apiKey: googleApikey,
@@ -229,12 +222,8 @@ class _MyMapPickerState extends State<MyMapPicker> {
                   ),
                 ),
                 onPressed: () {
-                  //print("Location ${cameraPosition.target.latitude} ${cameraPosition.target.longitude}");
-                  //print("Address: ${textController.text}");
                   latString = cameraPosition.target.latitude.toString();
                   longString = cameraPosition.target.longitude.toString();
-                  //print('latitude:$latString');
-                  //print('longitude:$longString');
                   shipmentCheck();
                 },
                 style: ButtonStyle(
@@ -278,7 +267,6 @@ class _MyMapPickerState extends State<MyMapPicker> {
         Position res = await Geolocator.getCurrentPosition();
         latString = res.latitude.toString();
         longString = res.longitude.toString();
-        // print('lat and long are$latString,$longString');
         List<Placemark> placemarks =
             await placemarkFromCoordinates(res.latitude, res.longitude);
         locationaddress = placemarks.first.street.toString() +
@@ -288,7 +276,6 @@ class _MyMapPickerState extends State<MyMapPicker> {
             placemarks.first.administrativeArea.toString() +
             "," +
             placemarks.first.postalCode.toString();
-        // print('place is :$location');
         /*var personInfoString = '$latString,$longString';
         Util.addStringToSF('latlang', personInfoString, '');
         Util.addStringToSF('latvalue', latString, '');
@@ -300,16 +287,13 @@ class _MyMapPickerState extends State<MyMapPicker> {
         setState(() {});
       }
     } else {
-      //print("GPS Service is not enabled, turn on GPS location");
     }
     //setState(() {});
   }
-
   void _getCurrentLocation() async {
     Position res = await Geolocator.getCurrentPosition();
     latString = res.latitude.toString();
     longString = res.longitude.toString();
-    // print('lat and long are1$latString,$longString');
     List<Placemark> placemarks =await placemarkFromCoordinates(res.latitude, res.longitude);
     locationaddress = placemarks.first.street.toString() +
         "," +
@@ -318,7 +302,6 @@ class _MyMapPickerState extends State<MyMapPicker> {
         placemarks.first.administrativeArea.toString() +
         "," +
         placemarks.first.postalCode.toString();
-    // print('place is :$location');
     /* var personInfoString = '$latString,$longString';
         Util.addStringToSF('latlang', personInfoString, '');
         Util.addStringToSF('latvalue', latString, '');

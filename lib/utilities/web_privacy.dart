@@ -37,12 +37,10 @@ class _PrivacyWebViewState extends State<PrivacyWebView> {
     var result = await controller.callAsyncJavaScript(
         functionBody: functionBody,
         arguments: {'x': 49, 'y': 'error message'});
-    print(result);
 
     result = await controller.callAsyncJavaScript(
         functionBody: functionBody,
         arguments: {'x': -49, 'y': 'error message'});
-    print(result);
   },
 ), ),
     );

@@ -21,7 +21,7 @@ class SplashScreen extends StatefulWidget {
 }
 class _SplashScreenState extends State<SplashScreen> {
   @override
-  void initState() {
+  void initState(){
     checkLogin();
     fcm();
     super.initState();
@@ -34,12 +34,11 @@ class _SplashScreenState extends State<SplashScreen> {
   }
   checkVersion()async{
     final response = await http.get(Uri.parse('${Util.baseurl}appupdate.php'));
-   // print("Response status: ${response.statusCode}");
     try{
       if(response.statusCode==200){
         var deco = jsonDecode(response.body);
         if(Platform.isAndroid){
-          if(deco['version']=='2.0.1'){
+          if(deco['version']=='2.0.2'){
             checking();
           }
           else{
@@ -62,7 +61,7 @@ class _SplashScreenState extends State<SplashScreen> {
           }
         }
         else if(Platform.isIOS){
-          if(deco['versionIOS']=='2.0.0'){
+          if(deco['versionIOS']=='2.0.1'){
             checking();
           }
           else{
@@ -143,7 +142,6 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future onDidReceiveLocalNotification(
       int id, String? title, String? body, String? payload) async {
-    // print('pT$title');print('pT$body');
     // display a dialog with the notification details, tap ok to go to another page
     showDialog(
       context: context,

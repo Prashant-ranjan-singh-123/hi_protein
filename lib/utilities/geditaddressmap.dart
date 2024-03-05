@@ -98,7 +98,6 @@ class _GeditAddressMapState extends State<GeditAddressMap> {
                 );
                 latString = cameraPosition.target.latitude.toString();
                 longString = cameraPosition.target.longitude.toString();
-                print('$latString,$longString');
                 Placemark place = placemarks[0];
                 //Name:${place.name}, Street:${place.street}, sub locality:${place.subLocality}, locality:${place.locality}, postal code:${place.postalCode}
                 // update the ui with the address
@@ -122,7 +121,6 @@ class _GeditAddressMapState extends State<GeditAddressMap> {
                           strictbounds: false,
                           components: [Component(Component.country, 'in')],
                           onError: (err){
-                             print(err);
                           }
                       );
                    if(place != null){
@@ -204,12 +202,8 @@ class _GeditAddressMapState extends State<GeditAddressMap> {
                   ),
                 ),
                 onPressed: () {
-                 // print("Location ${cameraPosition.target.latitude} ${cameraPosition.target.longitude}");
-                 // print("Address: ${textController.text}");
                   latString = cameraPosition.target.latitude.toString();
                   longString = cameraPosition.target.longitude.toString();
-                 // print('latitude:$latString');
-                 // print('longitude:$longString');
                   shipmentCheck();
                 },
                 style: ButtonStyle(
@@ -254,7 +248,6 @@ class _GeditAddressMapState extends State<GeditAddressMap> {
       longString = res.longitude.toString();
       List<Placemark> placemarks = await placemarkFromCoordinates(res.latitude, res.longitude);
         locationaddress = placemarks.first.street.toString() + "," + placemarks.first.locality.toString() + "," + placemarks.first.administrativeArea.toString() + "," + placemarks.first.postalCode.toString();
-       // print('place is :$location');
        /* var personInfoString = '$latString,$longString';
         Util.addStringToSF('latlang', personInfoString, '');
         Util.addStringToSF('latvalue', latString, '');
@@ -265,7 +258,6 @@ class _GeditAddressMapState extends State<GeditAddressMap> {
         //showToast('Access granted');
       }
     } else {
-      //print("GPS Service is not enabled, turn on GPS location");
     }
   }
   void _getCurrentLocation() async{
@@ -273,7 +265,6 @@ class _GeditAddressMapState extends State<GeditAddressMap> {
     double lng = double.parse(widget.longitudevalue);
     List<Placemark> placemarks = await placemarkFromCoordinates(lat, lng);
         locationaddress = placemarks.first.street.toString() + "," + placemarks.first.locality.toString() + "," + placemarks.first.administrativeArea.toString() + "," + placemarks.first.postalCode.toString();
-        print('place is :$locationaddress');
         /*var personInfoString = '$latString,$longString';
         Util.addStringToSF('latlang', personInfoString, '');
         Util.addStringToSF('latvalue', latString, '');
@@ -286,10 +277,8 @@ class _GeditAddressMapState extends State<GeditAddressMap> {
     Position res = await Geolocator.getCurrentPosition();
     latString = res.latitude.toString();
     longString = res.longitude.toString();
-    //print('latandlong: $latString,$longString');
     List<Placemark> placemarks = await placemarkFromCoordinates(res.latitude, res.longitude);
         locationaddress = placemarks.first.street.toString() + "," + placemarks.first.locality.toString() + "," + placemarks.first.administrativeArea.toString() + "," + placemarks.first.postalCode.toString();
-       // print('place is :$location');
         /*var personInfoString = '$latString,$longString';
         Util.addStringToSF('latlang', personInfoString, '');
         Util.addStringToSF('latvalue', latString, '');

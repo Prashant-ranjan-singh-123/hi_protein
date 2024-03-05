@@ -3,7 +3,6 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
 class WebViewApp extends StatefulWidget {
   const WebViewApp({super.key});
-
   @override
   State<WebViewApp> createState() => _WebViewAppState();
 }
@@ -13,7 +12,7 @@ class _WebViewAppState extends State<WebViewApp> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('CCAvenue'),
+        title: const Text('Razorpay'),
       ),
       body: Center(child: InAppWebView(
   initialUrlRequest: URLRequest(
@@ -36,12 +35,10 @@ class _WebViewAppState extends State<WebViewApp> {
     var result = await controller.callAsyncJavaScript(
         functionBody: functionBody,
         arguments: {'x': 49, 'y': 'error message'});
-    print(result);
 
     result = await controller.callAsyncJavaScript(
         functionBody: functionBody,
         arguments: {'x': -49, 'y': 'error message'});
-    print(result);
   },
 ), ),
     );

@@ -39,7 +39,7 @@ class ConnectivityProvider with ChangeNotifier {
         notifyListeners();
       }
     } on PlatformException catch (e) {
-      print("PlatformException: $e");
+      //print("PlatformException: $e");
     }
   }
 

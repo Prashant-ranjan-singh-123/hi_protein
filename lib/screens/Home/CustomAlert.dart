@@ -13,14 +13,14 @@ class _AlertDialogState extends State<AlertDialogExample> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Alert Dialog'),
-      content: Text('This is an example alert.'),
+      title: const Text('Alert Dialog'),
+      content: const Text('This is an example alert.'),
       actions: <Widget>[
         TextButton(
           onPressed: () {
             Navigator.of(context).pop();
           },
-          child: Text('OK'),
+          child: const Text('OK'),
         ),
       ],
     );

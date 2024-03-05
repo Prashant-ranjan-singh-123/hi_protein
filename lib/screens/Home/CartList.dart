@@ -57,7 +57,6 @@ class _CartListState extends State<CartList> {
         final response = await http.Response.fromStream(snd);
         if (response.statusCode == 200) {
           var dec = jsonDecode(response.body);
-          //print('cartlist:$dec');
           if (dec['success']) {
             for (int i = 0; i < dec['data'].length; i++) {
               prodList.add(ProductModel(
@@ -76,12 +75,9 @@ class _CartListState extends State<CartList> {
               }
               if(dec['data'][i]['stock'] == 'not available'){
                   countnotAvailableprodList.add(dec['data'][i]['stock']);
-                  //print('nag===> ${countnotAvailableprodList.length}');
               }
-             // print('===> ${countnotAvailableprodList.length}');
               Util.addStringToSF('outofstockvalue','${countnotAvailableprodList.length}','');
-              String outofstock = await Util.getStringValuesSF('outofstockvalue');  
-              print('outofstackcount: $outofstock');
+              //String outofstock = await Util.getStringValuesSF('outofstockvalue');  
             }
             c.totalAmount.value = totalAmount;
             c.charges.value = double.parse(dec['shippingcharges']);

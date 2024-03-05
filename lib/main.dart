@@ -18,11 +18,9 @@ void backgroundFetchHeadlessTask(HeadlessTask task) async {
   if (isTimeout) {
     // This task has exceeded its allowed running-time.  
     // You must stop what you're doing and immediately .finish(taskId)
-    print("[BackgroundFetch] Headless task timed-out: $taskId");
     BackgroundFetch.finish(taskId);
     return;
   }  
-  print('[BackgroundFetch] Headless event received.');
   // Do your work here...
   BackgroundFetch.finish(taskId);
 }*/

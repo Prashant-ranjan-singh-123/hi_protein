@@ -15,10 +15,7 @@ import 'DeliveryAddress.dart';
 
 class AddressForm extends StatefulWidget {
   const AddressForm(
-      {Key? key,
-      required this.type,
-      required this.state,
-      required this.address})
+      {Key? key,required this.type,required this.state,required this.address})
       : super(key: key);
   final String type;
   final int state;
@@ -87,7 +84,7 @@ class _AddressFormState extends State<AddressForm> {
   Widget checkConnection() {
     return Consumer<ConnectivityProvider>(
       builder: (consumerContext, model, child) {
-        return model.isOnline ? page() : NoInternet();
+        return model.isOnline ? page() : const NoInternet();
       },
     );
   }
@@ -321,9 +318,10 @@ class _AddressFormState extends State<AddressForm> {
         ln.text.isNotEmpty &&
         address.text.isNotEmpty &&
         mobile.text.isNotEmpty &&
+        mobile.text.length == 10 &&
         city.text.isNotEmpty &&
         state.text.isNotEmpty &&
-        pinCode.text.isNotEmpty) {
+        pinCode.text.isNotEmpty&&pinCode.text.length==6) {
       create();
     } else {
       if (fn.text.isEmpty) {
@@ -332,14 +330,18 @@ class _AddressFormState extends State<AddressForm> {
         Util.showDog(_scafoldkey.currentContext!, 'Please Enter Last name');
       } else if (mobile.text.isEmpty) {
         Util.showDog(_scafoldkey.currentContext!, 'Please Enter Mobile number');
-      } else if (address.text.isEmpty) {
+      }else if (mobile.text.length!=10) {
+        Util.showDog(_scafoldkey.currentContext!, 'Please Enter 10 digit Mobile number');
+      }else if (address.text.isEmpty) {
         Util.showDog(_scafoldkey.currentContext!, 'Please Enter Address');
-      } else if (city.text.isEmpty) {
+      }else if (city.text.isEmpty) {
         Util.showDog(_scafoldkey.currentContext!, 'Please Enter City');
-      } else if (state.text.isEmpty) {
+      }else if (state.text.isEmpty) {
         Util.showDog(_scafoldkey.currentContext!, 'Please Enter State');
-      } else if (pinCode.text.isEmpty) {
+      }else if (pinCode.text.isEmpty) {
         Util.showDog(_scafoldkey.currentContext!, 'Please Enter Pincode');
+      }else if (pinCode.text.length!=6) {
+        Util.showDog(_scafoldkey.currentContext!, 'Please Enter 6 digit Pincode');
       }
       // else if (await Util.getStringValuesSF('latlang') == null) {
       //   Util.showDog(_scafoldkey.currentContext!, 'Please select location');
@@ -402,6 +404,7 @@ class _AddressFormState extends State<AddressForm> {
         var dec = jsonDecode(response.body);
         Util.logDebug('response: $dec');
         if (dec['success']) {
+          // ignore: use_build_context_synchronously
           showAnimatedDialog(
             context: context,
             barrierDismissible: true,
@@ -410,14 +413,11 @@ class _AddressFormState extends State<AddressForm> {
                 contentText: dec['message'],
                 actions: [
                   TextButton(
-                      onPressed: () {
+                      onPressed:(){
                         Navigator.pop(context);
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const DeliveryAddress()));
+                        Navigator.push(context,MaterialPageRoute(builder:(context) => const DeliveryAddress()));
                       },
-                      child: Text(
+                      child:Text(
                         'Ok',
                         style: Util.txt(Palette.black, 16, FontWeight.w600),
                       )),

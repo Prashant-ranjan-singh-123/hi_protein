@@ -87,7 +87,6 @@ class _MyMapState extends State<MyMap> {
         _getCurrentLocation();
       }
     } else {
-      //print("GPS Service is not enabled, turn on GPS location");
     }
     setState(() {});
   }

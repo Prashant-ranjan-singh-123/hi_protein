@@ -6,12 +6,12 @@ import 'package:get/get.dart';
 import '../../utilities/AppManagement.dart';
 import '../../utilities/constants.dart';
 import '../../utilities/palette.dart';
-import 'CartList.dart';
-import 'CategoryList.dart';
+import 'bottom_nav_4th_item_cart/CartList.dart';
+import 'bottom_nav_2nd_item_category/CategoryList.dart';
 import 'HomeScreen.dart';
 import 'package:http/http.dart' as http;
-import 'Profile.dart';
-import 'Search.dart';
+import 'bottom_nav_5th_item_profile/Profile.dart';
+import 'bottom_nav_3rd_item_search/Search.dart';
 
 class NavigationItemBar extends StatefulWidget {
   const NavigationItemBar({Key? key, required this.state}) : super(key: key);

@@ -14,7 +14,7 @@ import '../../utilities/AppManagement.dart';
 import '../../utilities/constants.dart';
 import '../../utilities/google_search_places.dart';
 import '../../utilities/palette.dart';
-import '../Home/CartList.dart';
+import '../Home/bottom_nav_4th_item_cart/CartList.dart';
 import 'AddressForm.dart';
 import 'OrderList.dart';
 

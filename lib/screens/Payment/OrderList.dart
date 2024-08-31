@@ -9,9 +9,9 @@ import '../../Connectivity/connectivity_provider.dart';
 import '../../model/OrdersModel.dart';
 import '../../utilities/constants.dart';
 import '../../utilities/palette.dart';
-import '../Home/CartList.dart';
-import '../Home/NavigationItemBar.dart';
-import '../Home/Profile.dart';
+import '../Home/bottom_nav_4th_item_cart/CartList.dart';
+import '../Home/bottom_nav_bar.dart';
+import '../Home/bottom_nav_5th_item_profile/Profile.dart';
 import '../Home/feed_back.dart';
 import 'OrderDetailView.dart';
 

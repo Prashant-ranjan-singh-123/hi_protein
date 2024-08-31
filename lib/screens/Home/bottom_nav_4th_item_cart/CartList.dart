@@ -8,14 +8,14 @@ import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
-import '../../Connectivity/No_internet.dart';
-import '../../Connectivity/connectivity_provider.dart';
-import '../../Model/Product_Model.dart';
-import '../../utilities/AppManagement.dart';
-import '../../utilities/constants.dart';
-import '../../utilities/palette.dart';
+import '../../../Connectivity/No_internet.dart';
+import '../../../Connectivity/connectivity_provider.dart';
+import '../../../Model/Product_Model.dart';
+import '../../../utilities/AppManagement.dart';
+import '../../../utilities/constants.dart';
+import '../../../utilities/palette.dart';
 import 'CartBilling.dart';
-import 'NavigationItemBar.dart';
+import '../bottom_nav_bar.dart';
 
 class CartList extends StatefulWidget {
   const CartList({Key? key}) : super(key: key);

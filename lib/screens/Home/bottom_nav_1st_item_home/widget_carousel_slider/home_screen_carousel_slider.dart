@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:getwidget/components/carousel/gf_carousel.dart';
-import '../../utilities/palette.dart';
+import '../../../../utilities/palette.dart';
 
 class CarouselDisplay extends StatefulWidget{
   const CarouselDisplay({Key? key, required this.image}):super(key:key);

@@ -5,15 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
-import '../../Connectivity/No_internet.dart';
-import '../../Connectivity/connectivity_provider.dart';
-import '../../Model/Product_Model.dart';
-import '../../utilities/constants.dart';
-import '../../utilities/palette.dart';
+import '../../../Connectivity/No_internet.dart';
+import '../../../Connectivity/connectivity_provider.dart';
+import '../../../Model/Product_Model.dart';
+import '../../../utilities/constants.dart';
+import '../../../utilities/palette.dart';
 import 'CategoryList.dart';
-import 'DetailedView.dart';
-import 'HomeScreen.dart';
-import 'NavigationItemBar.dart';
+import '../bottom_nav_1st_item_home/home_detailed_view.dart';
+import '../HomeScreen.dart';
+import '../bottom_nav_bar.dart';
 
 class ProductList extends StatefulWidget {
    const ProductList({Key? key,required this.name,required this.state}) : super(key: key);

@@ -7,13 +7,13 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
-import '../../Connectivity/No_internet.dart';
-import '../../Connectivity/connectivity_provider.dart';
-import '../../Model/Product_Model.dart';
-import '../../utilities/constants.dart';
-import '../../utilities/palette.dart';
-import 'DetailedView.dart';
-import 'NavigationItemBar.dart';
+import '../../../Connectivity/No_internet.dart';
+import '../../../Connectivity/connectivity_provider.dart';
+import '../../../Model/Product_Model.dart';
+import '../../../utilities/constants.dart';
+import '../../../utilities/palette.dart';
+import '../bottom_nav_1st_item_home/home_detailed_view.dart';
+import '../bottom_nav_bar.dart';
 
 class Search extends StatefulWidget {
   const Search({Key? key, required this.share}) : super(key: key);

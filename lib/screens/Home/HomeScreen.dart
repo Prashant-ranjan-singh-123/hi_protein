@@ -6,8 +6,8 @@ import '../../Connectivity/No_internet.dart';
 import '../../Connectivity/connectivity_provider.dart';
 import '../../utilities/constants.dart';
 import '../../utilities/palette.dart';
-import 'NavigationItemBar.dart';
-import 'ProductItems.dart';
+import 'bottom_nav_bar.dart';
+import 'bottom_nav_1st_item_home/home_entry_page.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);

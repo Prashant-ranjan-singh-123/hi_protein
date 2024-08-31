@@ -498,7 +498,7 @@ import 'package:http/http.dart' as http;
 
 import '../../utilities/constants.dart';
 import '../../utilities/palette.dart';
-import '../Home/CartList.dart';
+import '../Home/bottom_nav_4th_item_cart/CartList.dart';
 import 'OrderList.dart';
 
 bool isTesting = false;

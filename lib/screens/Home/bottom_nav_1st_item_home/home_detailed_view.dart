@@ -5,18 +5,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
-import '../../Connectivity/No_internet.dart';
-import '../../Connectivity/connectivity_provider.dart';
-import '../../Model/Product_Model.dart';
-import '../../utilities/AppManagement.dart';
-import '../../utilities/constants.dart';
-import '../../utilities/palette.dart';
-import 'CarouselDisplay.dart';
-import 'HomeScreen.dart';
-import 'NavigationItemBar.dart';
-import 'ProductList.dart';
+import '../../../Connectivity/No_internet.dart';
+import '../../../Connectivity/connectivity_provider.dart';
+import '../../../Model/Product_Model.dart';
+import '../../../utilities/AppManagement.dart';
+import '../../../utilities/constants.dart';
+import '../../../utilities/palette.dart';
+import 'widget_carousel_slider/home_screen_carousel_slider.dart';
+import '../HomeScreen.dart';
+import '../bottom_nav_bar.dart';
+import '../bottom_nav_2nd_item_category/CategoryListDetailedPage.dart';
 import 'package:http/http.dart' as http;
-import 'Search.dart';
+import '../bottom_nav_3rd_item_search/Search.dart';
 
 
 class DetailedView extends StatefulWidget {

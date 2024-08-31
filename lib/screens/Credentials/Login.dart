@@ -15,10 +15,10 @@ import '../../Connectivity/No_internet.dart';
 import '../../Connectivity/connectivity_provider.dart';
 import '../../utilities/constants.dart';
 import '../../utilities/palette.dart';
-import '../Home/DetailedView.dart';
-import '../Home/ProductList.dart';
-import '../Home/Profile.dart';
-import '../Home/Search.dart';
+import '../Home/bottom_nav_1st_item_home/home_detailed_view.dart';
+import '../Home/bottom_nav_2nd_item_category/CategoryListDetailedPage.dart';
+import '../Home/bottom_nav_5th_item_profile/Profile.dart';
+import '../Home/bottom_nav_3rd_item_search/Search.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key, required this.share}) : super(key: key);

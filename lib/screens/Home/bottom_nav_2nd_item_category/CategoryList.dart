@@ -6,13 +6,13 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
-import '../../Connectivity/No_internet.dart';
-import '../../Connectivity/connectivity_provider.dart';
-import '../../model/CategoryModel.dart';
-import '../../utilities/constants.dart';
-import '../../utilities/palette.dart';
-import 'NavigationItemBar.dart';
-import 'ProductList.dart';
+import '../../../Connectivity/No_internet.dart';
+import '../../../Connectivity/connectivity_provider.dart';
+import '../../../model/CategoryModel.dart';
+import '../../../utilities/constants.dart';
+import '../../../utilities/palette.dart';
+import '../bottom_nav_bar.dart';
+import 'CategoryListDetailedPage.dart';
 
 class CategoryList extends StatefulWidget {
   const CategoryList({Key? key}) : super(key: key);

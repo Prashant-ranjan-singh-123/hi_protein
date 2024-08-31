@@ -15,7 +15,7 @@ import '../../Model/Product_Model.dart';
 import '../../utilities/AppManagement.dart';
 import '../../utilities/constants.dart';
 import '../../utilities/palette.dart';
-import '../Home/CartList.dart';
+import '../Home/bottom_nav_4th_item_cart/CartList.dart';
 import 'DeliveryAddress.dart';
 import 'OrderList.dart';
 import 'payment_screen.dart';

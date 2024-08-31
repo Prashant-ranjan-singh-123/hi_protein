@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:getwidget/components/carousel/gf_carousel.dart';
 
-import '../../utilities/palette.dart';
+import '../../../../utilities/palette.dart';
 
 class CarouselItem extends StatefulWidget {
   const CarouselItem({Key? key, required this.carousel}) : super(key: key);

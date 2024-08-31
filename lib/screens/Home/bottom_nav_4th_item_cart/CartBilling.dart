@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
-import '../../Model/Product_Model.dart';
-import '../../utilities/AppManagement.dart';
-import '../../utilities/constants.dart';
-import '../../utilities/palette.dart';
-import '../Payment/DeliveryAddress.dart';
+import '../../../Model/Product_Model.dart';
+import '../../../utilities/AppManagement.dart';
+import '../../../utilities/constants.dart';
+import '../../../utilities/palette.dart';
+import '../../Payment/DeliveryAddress.dart';
 
 
 class CartBilling extends StatefulWidget {

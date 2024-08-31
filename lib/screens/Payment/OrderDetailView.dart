@@ -12,7 +12,7 @@ import '../../Connectivity/connectivity_provider.dart';
 import '../../Model/orderdetails.dart';
 import '../../utilities/constants.dart';
 import '../../utilities/palette.dart';
-import '../Home/CartList.dart';
+import '../Home/bottom_nav_4th_item_cart/CartList.dart';
 import 'OrderList.dart';
 
 class OrderDetailView extends StatefulWidget {

@@ -9,14 +9,14 @@ import 'package:get/get.dart';
 import 'package:hi_protein/screens/Payment/OrderDetailView.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
-import '../../Connectivity/No_internet.dart';
-import '../../Connectivity/connectivity_provider.dart';
-import '../../utilities/constants.dart';
-import '../../utilities/gstreet_map.dart';
-import '../../utilities/palette.dart';
-import 'CarouselItem.dart';
-import 'DetailedView.dart';
-import 'ProductList.dart';
+import '../../../Connectivity/No_internet.dart';
+import '../../../Connectivity/connectivity_provider.dart';
+import '../../../utilities/constants.dart';
+import '../../../utilities/gstreet_map.dart';
+import '../../../utilities/palette.dart';
+import 'widget_carousel_slider/CarouselItem.dart';
+import 'home_detailed_view.dart';
+import '../bottom_nav_2nd_item_category/CategoryListDetailedPage.dart';
 
 class ProductItems extends StatefulWidget {
   const ProductItems({Key? key}) : super(key: key);

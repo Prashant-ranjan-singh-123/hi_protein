@@ -1,8 +1,11 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:ffi';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:get/get.dart';
+import 'package:hi_protein/screens/Payment/OrderDetailView.dart';
 import 'package:provider/provider.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:http/http.dart' as http;
@@ -22,7 +25,8 @@ class PaymentDetails extends StatefulWidget {
       {Key? key,
       required this.address,
       required this.state,
-      required this.share,required this.shippervalue})
+      required this.share,
+      required this.shippervalue})
       : super(key: key);
   final List<AddressModel> address;
   final int state;
@@ -31,9 +35,10 @@ class PaymentDetails extends StatefulWidget {
   @override
   State<PaymentDetails> createState() => _PaymentDetailsState();
 }
+
 class _PaymentDetailsState extends State<PaymentDetails> {
   final GlobalKey<ScaffoldState> _scaffoldkey = GlobalKey<ScaffoldState>();
-  String available = '',message = '';
+  String available = '', message = '';
   String shippervaluestring = '';
   TextEditingController promoCode = TextEditingController();
   final Controller c = Get.put(Controller());
@@ -52,12 +57,14 @@ class _PaymentDetailsState extends State<PaymentDetails> {
   var addtime = 10, totaltime = 0;
   final Razorpay _razorpay = Razorpay();
   double discountAmount = 0.0;
+  int counter = 0;
+  bool isloading = false;
   @override
   void initState() {
     Provider.of<ConnectivityProvider>(context, listen: false).startMonitoring();
     super.initState();
     getPromo();
-     _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
     _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
     _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
   }
@@ -91,6 +98,7 @@ class _PaymentDetailsState extends State<PaymentDetails> {
     }
     getData();
   }
+
   getData() async {
     currenttime = '${widget.share['estimate_time']}';
     shippervaluestring = '${widget.shippervalue['shipper']}';
@@ -118,20 +126,21 @@ class _PaymentDetailsState extends State<PaymentDetails> {
                 address: dec['contactus'][0]['address']));
           }
           payKeys.add(PaymentModel(
-              keyId: dec['paymentKeys'][0]['keyId'],   //keyId //MerchantId
-              keySecret: dec['paymentKeys'][0]['keySecret'],  //keySecret    //access_code
+              keyId: dec['paymentKeys'][0]['keyId'], //keyId //MerchantId
+              keySecret: dec['paymentKeys'][0]
+                  ['keySecret'], //keySecret    //access_code
               url: dec['paymentKeys'][0]['url'])); //
           orderID = dec['orderid'];
           tidvalue = dec['tid'];
           mobile = dec['userdetails'][0]['mobile'];
           email = dec['userdetails'][0]['email'];
-        } else {
-        }
+        } else {}
       }
     } catch (e) {
       Util.logDebug(e);
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -165,10 +174,11 @@ class _PaymentDetailsState extends State<PaymentDetails> {
   Widget checkConnection() {
     return Consumer<ConnectivityProvider>(
       builder: (consumerContext, model, child) {
-        return model.isOnline ? page() : NoInternet();
+        return model.isOnline ? page() : const NoInternet();
       },
     );
   }
+
   page() {
     return Padding(
       padding: const EdgeInsets.all(10.0),
@@ -362,22 +372,41 @@ class _PaymentDetailsState extends State<PaymentDetails> {
             ),
           ),
           ElevatedButton(
-              onPressed: (){availibilityCheck();},
+            style: ElevatedButton.styleFrom(backgroundColor: Palette.color2),
+            onPressed: () {
+              setState(() {
+                isloading = true;
+              });
+              availibilityCheck();
+            },
+            child: isloading
+                ? const CircularProgressIndicator(
+                    color: Colors.white,
+                  )
+                : Text(
+                    'Pay',
+                    style: Util.txt(Palette.white, 16, FontWeight.w600),
+                  ),
+          )
+          /*ElevatedButton(
+              onPressed: (){handleButtonTap();},
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(Palette.color2),
               ),
               child: Text(
                 ' Pay ',
                 style: Util.txt(Palette.white, 16, FontWeight.w600),
-              ))
+              ))*/
         ],
       ),
     );
   }
+
   availibilityCheck() async {
     String userid = await Util.getStringValuesSF('userid');
     try {
-      final availabilityCheck =http.MultipartRequest('POST', Uri.parse('${Util.baseurl}availability.php'));
+      final availabilityCheck = http.MultipartRequest(
+          'POST', Uri.parse('${Util.baseurl}availability.php'));
       availabilityCheck.fields['client'] = Util.clientName;
       availabilityCheck.fields['userid'] = userid;
       final snd = await availabilityCheck.send();
@@ -385,27 +414,30 @@ class _PaymentDetailsState extends State<PaymentDetails> {
       if (response.statusCode == 200) {
         var dec = jsonDecode(response.body);
         if (dec['status'] == '1') {
-          Util.addStringToSF('availability', dec['status'].toString(),'');
-          Util.addStringToSF('availabl', dec['available'].toString(),'');
-          Util.addStringToSF('msg', dec['message'].toString(),'');
-          if(dec['available'].toString()== 'true'){createRequest();}else{showResponseAlert(dec['message'].toString());}
-          
+          Util.addStringToSF('availability', dec['status'].toString(), '');
+          Util.addStringToSF('availabl', dec['available'].toString(), '');
+          Util.addStringToSF('msg', dec['message'].toString(), '');
+          if (dec['available'].toString() == 'true') {
+            createRequest(); //timer = Timer.periodic(const Duration(seconds: 30),(Timer t) => razorpayresponse());
+          } else {
+            showResponseAlert(dec['message'].toString());
+          }
         } else {
           //if(isavailable == true){
-            Util.addStringToSF('availability', '0','');
-            Util.addStringToSF('availabl', dec['available'].toString(),'');
-            showResponseAlert(dec['available'].toString());
-           //isavailable = false;
-            //alert();
-            //showAlertDialog();
+          Util.addStringToSF('availability', '0', '');
+          Util.addStringToSF('availabl', dec['available'].toString(), '');
+          showResponseAlert(dec['available'].toString());
+          //isavailable = false;
+          //alert();
+          //showAlertDialog();
           //}
         }
-      } else {
-      }
+      } else {}
     } catch (e) {
       Util.logDebug(e);
     }
   }
+
   void showResponseAlert(String responseMessage) {
     showDialog(
       context: context,
@@ -428,6 +460,7 @@ class _PaymentDetailsState extends State<PaymentDetails> {
       },
     );
   }
+
   //------
   checkprmCode() {
     FocusScope.of(context).requestFocus(FocusNode());
@@ -461,6 +494,7 @@ class _PaymentDetailsState extends State<PaymentDetails> {
       }
     });
   }
+
   //-----
   createRequest() async {
     if (payKeys[0].keyId == '') {
@@ -468,23 +502,31 @@ class _PaymentDetailsState extends State<PaymentDetails> {
           _scaffoldkey.currentContext!, 'Payment gateway is under Maintenance');
       return;
     }
-    String keyId = payKeys[0].keyId,keySecret = payKeys[0].keySecret,url = payKeys[0].url;
-    String basicAuth='Basic ${base64Encode(utf8.encode('$keyId:$keySecret'))}';
+    String keyId = payKeys[0].keyId,
+        keySecret = payKeys[0].keySecret,
+        url = payKeys[0].url;
+    String basicAuth =
+        'Basic ${base64Encode(utf8.encode('$keyId:$keySecret'))}';
     var data = {
       'amount': (c.checkOutPrice.value * 100).toInt().toString(),
       'client': Util.clientName
       //'currency': 'INR'
     };
-    var response = await http.post(Uri.parse('${Util.baseurl}razorpayorder.php'),
+    var response = await http.post(
+        Uri.parse('${Util.baseurl}razorpayorder.php'),
         body: data,
         headers: {'Authorization': basicAuth, 'Accept': "application/json"});
     sentId = jsonDecode(response.body)['id'];
-    if(sentId==''){paymentErrorDlog('Order is null.');}else{uDateTemCart('1');
-    openCheckout();}
+    if (sentId == '') {
+      paymentErrorDlog('Order is null.');
+    } else {
+      uDateTemCart('1');
+      openCheckout();
+    }
     /***************************CCAvenue******************************/
     //initPayment();
-    
   }
+
   uDateTemCart(String status) async {
     Util.logDebug('status is $status');
     String userid = await Util.getStringValuesSF('userid');
@@ -496,13 +538,18 @@ class _PaymentDetailsState extends State<PaymentDetails> {
       'Rpayorderid': sentId, //tid //Rpayorderid
       'status': status,
       'orderid': orderID.toString(),
-      'client': Util.clientName
+      'client': Util.clientName,
+      'shipper': shippervaluestring,
+      'est_time': widget.share['estimate_time'].toString(),
+      'est_price': widget.share['estimate_price'].toString(),
+      'mobile': mobile
     };
     var respon = await http.post(Uri.parse('${Util.baseurl}updatetempcart.php'),
         body: jsonEncode(map));
     stam = respon.statusCode.toString();
     try {
       if (respon.statusCode == 200) {
+        print('updatetempcart value: ${respon.body}');
       } else {
         Map<String, String> map = {
           'email': userid,
@@ -511,8 +558,7 @@ class _PaymentDetailsState extends State<PaymentDetails> {
         };
         var response = await http.post(Uri.parse('${Util.baseurl}logs.php'),
             body: jsonEncode(map));
-        if (response.statusCode == 200) {
-        }
+        if (response.statusCode == 200) {}
       }
     } catch (e) {
       Map<String, String> map = {
@@ -522,14 +568,14 @@ class _PaymentDetailsState extends State<PaymentDetails> {
       };
       var response = await http.post(Uri.parse('${Util.baseurl}logs.php'),
           body: jsonEncode(map));
-      if (response.statusCode == 200) {
-      }
+      if (response.statusCode == 200) {}
     }
   }
+
   void initPayment() async {
     var url = "https://redbag.vensframe.com/app/ccavenueRequest.php";
     Uri uri = Uri.parse(url);
-    var res = await http.post(uri,body:{
+    var res = await http.post(uri, body: {
       'tid': sentId,
       'merchant_id': payKeys[0].keyId,
       'order_id': orderID.toString(),
@@ -557,24 +603,31 @@ class _PaymentDetailsState extends State<PaymentDetails> {
       throw Exception();
     }
   }
+
   void navigate() {
-    Navigator.push(context,
+    Navigator.push(
+        context,
         MaterialPageRoute(
             builder: (builder) => PaymentScreen(
-                encryptedstring: encryptedstring!,
-                accescodestring: accesscodestring!,
-                addressvalue: widget.address[widget.state].id,
-                tidvalue: tidvalue,
-                orderidvalue: orderID.toString(),
-                totalAmountvalue: c.checkOutPrice.toString(),
-                mobilenumbervalue: c.delMobile.value,
-                shippingchargesvalue: widget.share['estimate_price'].toString(),
-                shipperstringis : shippervaluestring,
-                totaltimevalue: totaltime.toString(),
-                discountvalue: discountAmount.toString(),
+                  encryptedstring: encryptedstring!,
+                  accescodestring: accesscodestring!,
+                  addressvalue: widget.address[widget.state].id,
+                  tidvalue: tidvalue,
+                  orderidvalue: orderID.toString(),
+                  totalAmountvalue: c.checkOutPrice.toString(),
+                  mobilenumbervalue: c.delMobile.value,
+                  shippingchargesvalue:
+                      widget.share['estimate_price'].toString(),
+                  shipperstringis: shippervaluestring,
+                  totaltimevalue: totaltime.toString(),
+                  discountvalue: discountAmount.toString(),
                 )));
   }
-  void openCheckout()async{
+
+  void openCheckout() async {
+    setState(() {
+      isloading = false;
+    });
     String userid = await Util.getStringValuesSF('userid');
     //String email = await Util.getStringValuesSF('email');
     //String mobile = await Util.getStringValuesSF('mobile');
@@ -585,25 +638,58 @@ class _PaymentDetailsState extends State<PaymentDetails> {
       'payment_capture': 1,
       'order_id': sentId,
       // 'timeout': 180,
-      'prefill': {'contact':c.delMobile.value,'email':''},
+      'prefill': {'contact': c.delMobile.value, 'email': ''},
       'external': {
         'wallets': ['paytm']
       }
     };
-    try{
+    try {
       _razorpay.open(options);
     } catch (e) {
-      Map<String, String> map={
+      Map<String, String> map = {
         'email': userid,
         'instance': 'payment error',
         'error': e.toString()
       };
       var response = await http.post(Uri.parse('${Util.baseurl}logs.php'),
           body: jsonEncode(map));
-      if (response.statusCode == 200){}
+      if (response.statusCode == 200) {}
     }
   }
-  void updata()async{
+
+  razorpayresponse() async {
+    try {
+      final razorpayList = http.MultipartRequest(
+          'POST', Uri.parse('${Util.baseurl}payment_status.php'));
+      razorpayList.fields['Rpayorderid'] = sentId;
+      final snd = await razorpayList.send();
+      final response = await http.Response.fromStream(snd);
+      if (response.statusCode == 200) {
+        var dec = jsonDecode(response.body);
+        //if (dec['success']==true){
+        //print('response msg:${dec['message']}');
+        if (dec['message'] == 'created' || dec['message'] == 'authorized') {
+        } else if (dec['message'] == 'captured') {
+          setState(() {
+            Util.dismissDialog(context);
+            showDlog1(dec['payid']);
+          });
+        } else if (dec['message'] == 'refunded' || dec['message'] == 'failed') {
+          setState(() {
+            Util.dismissDialog(context);
+            uDateTemCart('0');
+            showDlog('Payment Error');
+          });
+        } else {}
+        //}
+        //else{print('success is false');}
+      }
+    } catch (e) {
+      Util.logDebug(e);
+    }
+  }
+
+  /*void updata()async{
     Util.showProgress(context);
     String tempo;
     String userid = await Util.getStringValuesSF('userid');
@@ -663,71 +749,132 @@ class _PaymentDetailsState extends State<PaymentDetails> {
           body: jsonEncode(map));
       if (respo.statusCode == 200) {}
     }
-  }
+  }*/
   showDlog(String message) {
-    showAnimatedDialog(
+    showDialog(
       context: context,
-      barrierDismissible: false,
+      barrierDismissible: false, // Prevents dismissal by tapping outside
       builder: (BuildContext context) {
-        return ClassicGeneralDialogWidget(
-          titleText:'Payment Success',
-          contentText:message,
+        return AlertDialog(
+          title: Text(
+            'Failed',
+            style: Util.txt(Palette.black, 16, FontWeight.w600),
+          ),
+          content: Text(
+            message,
+            style: Util.txt(Palette.black, 14, FontWeight.w400),
+          ),
           actions: [
             TextButton(
-                onPressed:(){
-                  Navigator.pop(context);
-                  Navigator.push(context,MaterialPageRoute(
-                          builder:(context)=> const MyOrdersList()));
-                },
-                child:Text('Ok',style:Util.txt(Palette.black,16,FontWeight.w600),)),
+              onPressed: () {
+                Navigator.pop(context); // Closes the dialog
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const CartList()),
+                ); // Navigate to CartList
+              },
+              child: Text(
+                'Ok',
+                style: Util.txt(Palette.black, 16, FontWeight.w600),
+              ),
+            ),
           ],
         );
       },
-      animationType: DialogTransitionType.slideFromLeftFade,
-      curve: Curves.fastOutSlowIn,
-      duration: const Duration(seconds: 1),
     );
   }
+
+  showDlog1(String message) {
+    showDialog(
+      context: context,
+      barrierDismissible: false, // Prevents dismissal by tapping outside
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            'Payment Success',
+            style: Util.txt(Palette.black, 16, FontWeight.w600),
+          ),
+          content: Text(
+            message,
+            style: Util.txt(Palette.black, 14, FontWeight.w400),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => OrderDetailView(
+                      share: {'id': orderID.toString()},
+                    ),
+                  ),
+                ); // Navigate to OrderDetailView
+              },
+              child: Text(
+                'Ok',
+                style: Util.txt(Palette.black, 16, FontWeight.w600),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   paymentErrorDlog(String message) {
-    showAnimatedDialog(
+    showDialog(
       context: context,
-      barrierDismissible: false,
+      barrierDismissible: false, // Prevents dismissal by tapping outside
       builder: (BuildContext context) {
-        return ClassicGeneralDialogWidget(
-          titleText:'Payment Error',
-          contentText:message,
+        return AlertDialog(
+          title: Text(
+            'Failed',
+            style: Util.txt(Palette.black, 16, FontWeight.w600),
+          ),
+          content: Text(
+            message,
+            style: Util.txt(Palette.black, 14, FontWeight.w400),
+          ),
           actions: [
             TextButton(
-                onPressed:(){
-                  Navigator.pop(context);
-                  /*Navigator.push(context,MaterialPageRoute(
-                          builder:(context)=> const MyOrdersList()));*/
-                },
-                child:Text('Ok',style:Util.txt(Palette.black,16,FontWeight.w600),)),
+              onPressed: () {
+                Navigator.pop(context); // Close the dialog
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        const MyOrdersList(), // Navigate to MyOrdersList
+                  ),
+                );
+              },
+              child: Text(
+                'Ok',
+                style: Util.txt(Palette.black, 16, FontWeight.w600),
+              ),
+            ),
           ],
         );
       },
-      animationType: DialogTransitionType.slideFromLeftFade,
-      curve: Curves.fastOutSlowIn,
-      duration: const Duration(seconds: 1),
     );
   }
+
   void _handlePaymentSuccess(PaymentSuccessResponse response) async {
     // Util.customDialog('Payment Success','Your Payment ID : '+response.paymentId.toString(), context);
     paymentStatus = response.paymentId.toString();
-    updata(); //commentedbyme
+    Util.showProgress(context);
+    //updata(); //commentedbyme
+    razorpayresponse();
   }
 
   void _handlePaymentError(PaymentFailureResponse response) async {
-    // String email = await Util.getStringValuesSF("email");
-    /*var dec = jsonDecode(response.message.toString());
-    String msg = dec['error']['description'] +
+    //String email = await Util.getStringValuesSF("email");
+    String msg = response.message.toString() +
         '\n\n' +
         'In case of any transaction disputes' +
         '\n' +
         contactUs[0].mobile;
     Util.customDialog('Payment Failed', msg, context);
-    paymentStatus = 'Payment Failed';*/
+    paymentStatus = 'Payment Failed';
     uDateTemCart('0');
     // Map<String,String>map = {'email':email,'instance':'payment failed','error':response.code.toString()+' - '+response.message.toString()};
     // var respo = await http.post(Uri.parse(Util.baseurl+'logs.php'),body: jsonEncode(map));

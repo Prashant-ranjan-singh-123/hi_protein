@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hi_protein/screens/Credentials/push_notifications_c.dart';
 import 'package:provider/provider.dart';
 import 'package:hi_protein/screens/splashscreen.dart';
 import 'package:hi_protein/utilities/palette.dart';
@@ -25,9 +26,10 @@ void backgroundFetchHeadlessTask(HeadlessTask task) async {
   BackgroundFetch.finish(taskId);
 }*/
 @pragma('vm:entry-point')
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message)async{
   await Firebase.initializeApp();
-  await setupFlutterNotifications();
+  pushNotification.remoteNotification();
+  //await setupFlutterNotifications();
 }
 /// Create a [AndroidNotificationChannel] for heads up notifications
 const AndroidNotificationChannel channel = AndroidNotificationChannel(
@@ -76,10 +78,21 @@ FirebaseMessaging messaging = FirebaseMessaging.instance;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   lifecycleEventHandler.init();
-  //BackgroundFetch.registerHeadlessTask(backgroundFetchHeadlessTask);
   await Firebase.initializeApp();
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
+  NotificationSettings settings=await messaging.requestPermission(
+    alert: true,
+    announcement: false,
+    badge: true,
+    carPlay: false,
+    criticalAlert: false,
+    provisional: false,
+    sound: true,
+  );
+  /*await Firebase.initializeApp();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);*/
   runApp(const MyApp());
 }
 
@@ -100,9 +113,11 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
             primarySwatch: Colors.blue,
-            pageTransitionsTheme: const PageTransitionsTheme(builders: {
-              TargetPlatform.android: CupertinoPageTransitionsBuilder(),
-              TargetPlatform.iOS: CupertinoPageTransitionsBuilder()
+            pageTransitionsTheme: PageTransitionsTheme(builders: {
+              // TargetPlatform.android: CupertinoPageTransitionsBuilder(),
+              // TargetPlatform.iOS: CupertinoPageTransitionsBuilder()
+              TargetPlatform.android: NoTransitionsBuilder(),
+              TargetPlatform.iOS: NoTransitionsBuilder()
             }),
             useMaterial3: true,
           ),
@@ -114,6 +129,18 @@ class MyApp extends StatelessWidget {
             );
           }),
     );
+  }
+}
+
+class NoTransitionsBuilder extends PageTransitionsBuilder {
+  @override
+  Widget buildTransitions<T>(
+      PageRoute<T> route,
+      BuildContext context,
+      Animation<double> animation,
+      Animation<double> secondaryAnimation,
+      Widget child) {
+    return child;
   }
 }
 

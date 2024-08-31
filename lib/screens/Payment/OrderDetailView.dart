@@ -1,8 +1,8 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 import 'package:provider/provider.dart';
@@ -28,7 +28,8 @@ class _OrderDetailViewState extends State<OrderDetailView> {
   List shipmentActivities=[];
   bool loader = true,showTrack=false;
   String orderstatus = '';
-
+  Timer? timer;
+  int count=0;
   @override
   void initState() {
     Provider.of<ConnectivityProvider>(context, listen: false).startMonitoring();
@@ -41,30 +42,71 @@ class _OrderDetailViewState extends State<OrderDetailView> {
     try{
       final productList = http.MultipartRequest('POST',Uri.parse('${Util.baseurl}order_details_by_id.php'));
       productList.fields['userid']=userid;
-      productList.fields['client']=Util.clientName ;
+      productList.fields['client']=Util.clientName;
       productList.fields['id']=widget.share['id'];
       final snd = await productList.send();
       final response = await http.Response.fromStream(snd);
       if(response.statusCode==200){
         var dec = jsonDecode(response.body);
+        //print('dec:$dec');
         if(dec['success']){
           orders=List<OrderDetails>.from(dec['data'].map((i)=>OrderDetails.fromJson(i)));
           shipmentActivities.addAll(dec['data'][0]['shipment_track_activities']);
           orderstatus = dec['data'][0]['status'];
         }
+        else{setState((){if(count==3){errorDlog('Something went wrong');}else{count++;Util.showProgress(context);startTimer();}});}
       }
     }catch(e){Util.logDebug(e);}
-    if(mounted) {
-      setState(() {
-      loader=false;
-    });
+    if(mounted){
+      setState((){loader=false;});
     }
   }
-  navBack(){
-    Navigator.push(context, MaterialPageRoute(builder: (context)=>const MyOrdersList()));
+  void startTimer(){
+    timer=Timer(const Duration(seconds:6),(){
+      timer?.cancel();
+      Util.dismissDialog(context);
+      getData();
+      setState((){});
+    });
   }
+  errorDlog(String message){
+    showDialog(
+      context: context,
+      barrierDismissible: false, // Prevents dismissal by tapping outside
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            'Failed',
+            style: Util.txt(Palette.black, 16, FontWeight.w600),
+          ),
+          content: Text(
+            message,
+            style: Util.txt(Palette.black, 14, FontWeight.w400),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context); // Close the dialog
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const MyOrdersList(), // Navigate to MyOrdersList
+                  ),
+                );
+              },
+              child: Text(
+                'Ok',
+                style: Util.txt(Palette.black, 16, FontWeight.w600),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+  navBack(){Navigator.push(context, MaterialPageRoute(builder:(context)=>const MyOrdersList()));}
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context){
     return WillPopScope(
       onWillPop: ()async{
         navBack();
@@ -78,7 +120,7 @@ class _OrderDetailViewState extends State<OrderDetailView> {
           elevation: 0,
           leading: IconButton(onPressed: navBack,icon: Icon(Ionicons.arrow_back,color: Palette.black,),),
           title: Text('Order Details',style: Util.txt(Palette.black, 18, FontWeight.w600),),
-          actions: [
+          actions:[
             Padding(
               padding: const EdgeInsets.all(10.0),
               child: TextButton(onPressed: (){
@@ -100,7 +142,7 @@ class _OrderDetailViewState extends State<OrderDetailView> {
       builder: (consumerContext, model, child) {
         return model.isOnline
             ? page()
-            : NoInternet();
+            : const NoInternet();
       },
     );
   }
@@ -491,32 +533,38 @@ class _OrderDetailViewState extends State<OrderDetailView> {
     }
   }
     confDial( String title, String message,) {
-      showAnimatedDialog(
-      context: context,
-      barrierDismissible: true,
-      builder: (BuildContext context) {
-        return ClassicGeneralDialogWidget(
-          titleText: title,
-          contentText: message,
-          actions: [
-            TextButton(
+      showDialog(
+        context: context,
+        barrierDismissible: true, // Allows dismissing by tapping outside
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(
+              title,
+              style: Util.txt(Palette.black, 16, FontWeight.w600),
+            ),
+            content: Text(
+              message,
+              style: Util.txt(Palette.black, 14, FontWeight.w400),
+            ),
+            actions: [
+              TextButton(
                 onPressed: () {
-                  Navigator.pop(context);
+                  Navigator.pop(context); // Closes the dialog
                   Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const CartList()));
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const CartList(), // Navigate to CartList
+                    ),
+                  );
                 },
                 child: Text(
                   'Ok',
                   style: Util.txt(Palette.black, 16, FontWeight.w600),
-                )),
-          ],
-        );
-      },
-      animationType: DialogTransitionType.slideFromLeftFade,
-      curve: Curves.fastOutSlowIn,
-      duration: const Duration(seconds: 1),
-    );
-  }
+                ),
+              ),
+            ],
+          );
+        },
+      );
+    }
 }

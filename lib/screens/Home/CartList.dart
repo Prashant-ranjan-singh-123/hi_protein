@@ -4,7 +4,6 @@ import 'package:fancy_shimmer_image/fancy_shimmer_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
@@ -149,15 +148,13 @@ class _CartListState extends State<CartList> {
       ),
     );
   }
-
   Widget checkConnection() {
     return Consumer<ConnectivityProvider>(
       builder: (consumerContext, model, child) {
-        return model.isOnline ? page() : NoInternet();
+        return model.isOnline ? page() : const NoInternet();
       },
     );
   }
-
   page() {
     return prodList.isNotEmpty
         ? ListView(
@@ -523,38 +520,47 @@ class _CartListState extends State<CartList> {
           );
   }
   confDial1( String prdid, int index, int status) {
-      showAnimatedDialog(
+    showDialog(
       context: context,
-      barrierDismissible: true,
+      barrierDismissible: true, // Allows the dialog to be dismissed by tapping outside of it
       builder: (BuildContext context) {
-        return ClassicGeneralDialogWidget(
-          titleText: 'cart',
-          contentText: 'Are you sure want to remove this product ?',
+        return AlertDialog(
+          title: Text(
+            'Cart',
+            style: Util.txt(Palette.black, 16, FontWeight.w600),
+          ),
+          content: Text(
+            'Are you sure you want to remove this product?',
+            style: Util.txt(Palette.black, 16, FontWeight.w400),
+          ),
           actions: [
             TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  onlineCart(prdid, index, 0);
-                },
-                child: Text(
-                  'Ok',
-                  style: Util.txt(Palette.black, 16, FontWeight.w600),
-                )),
-                TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                 // Navigator.push(context,MaterialPageRoute( builder: (context) => const MyMapPicker()));
-                },
-                child: Text(
-                  'Cancel',
-                  style: Util.txt(Palette.black, 16, FontWeight.w600),
-                )),
+              onPressed: () {
+                Navigator.pop(context); // Close the dialog
+                onlineCart(prdid, index, 0); // Execute the function to remove the product
+              },
+              child: Text(
+                'Ok',
+                style: Util.txt(Palette.black, 16, FontWeight.w600),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context); // Close the dialog
+                // Optionally, add other actions here
+              },
+              child: Text(
+                'Cancel',
+                style: Util.txt(Palette.black, 16, FontWeight.w600),
+              ),
+            ),
           ],
+          elevation: 24.0, // Optional: Adds shadow to the dialog
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12.0), // Optional: Rounds the corners
+          ),
         );
       },
-      animationType: DialogTransitionType.slideFromLeftFade,
-      curve: Curves.fastOutSlowIn,
-      duration: const Duration(seconds: 1),
     );
   }
   //---------
@@ -567,10 +573,12 @@ class _CartListState extends State<CartList> {
       'count': count.toString(),
       'client': Util.clientName
     };
+    print('Payload carttemp is: $map');
     var response = await http.post(Uri.parse('${Util.baseurl}carttemp.php'),
         body: jsonEncode(map));
     try {
       if (response.statusCode == 200) {
+        print('carttemp value: ${response.body}');
         var dec = jsonDecode(response.body);
         if (dec['status'] == '1') {
           c.cart.value = dec['count'];

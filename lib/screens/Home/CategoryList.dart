@@ -16,7 +16,6 @@ import 'ProductList.dart';
 
 class CategoryList extends StatefulWidget {
   const CategoryList({Key? key}) : super(key: key);
-
   @override
   _CategoryListState createState() => _CategoryListState();
 }
@@ -51,8 +50,7 @@ class _CategoryListState extends State<CategoryList> {
       setState(() {});
     }
   }
-
-  Future<bool> _onWillPop() async {
+  Future<bool> _onWillPop() async{
     return (await showDialog(
           context: context,
           builder: (context) => AlertDialog(
@@ -77,7 +75,6 @@ class _CategoryListState extends State<CategoryList> {
         )) ??
         false;
   }
-
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -116,7 +113,7 @@ class _CategoryListState extends State<CategoryList> {
   Widget checkConnection() {
     return Consumer<ConnectivityProvider>(
       builder: (consumerContext, model, child) {
-        return model.isOnline ? page() : NoInternet();
+        return model.isOnline ? page() : const NoInternet();
       },
     );
   }
@@ -137,7 +134,7 @@ class _CategoryListState extends State<CategoryList> {
                     child: ListTile(
                       title: Text(
                         e.name.capitalize.toString(),
-                        style: Util.txt(Palette.black, 16, FontWeight.w500),
+                        style:Util.txt(Palette.black,16,FontWeight.w500),
                       ),
                       trailing: Icon(
                         Icons.navigate_next,

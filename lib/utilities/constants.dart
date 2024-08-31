@@ -6,7 +6,6 @@ import 'package:http/http.dart' as http;
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:share_plus/share_plus.dart';
@@ -87,28 +86,28 @@ class Util {
 ////////------------------------- Toast-----------------------------------------
   static showDog(BuildContext context, String msg) {
     if (Platform.isAndroid) {
-      showAnimatedDialog(
+      showDialog(
         context: context,
-        barrierDismissible: true,
+        barrierDismissible: true, // Allows the dialog to be dismissed by tapping outside
         builder: (BuildContext context) {
-          return ClassicGeneralDialogWidget(
-            titleText: msg,
-            // contentText: msg,
+          return AlertDialog(
+            title: Text(
+              msg,
+              style: Util.txt(Palette.black, 16, FontWeight.w600),
+            ),
             actions: [
               TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text(
-                    'Ok',
-                    style: Util.txt(Palette.black, 16, FontWeight.w600),
-                  )),
+                onPressed: () {
+                  Navigator.pop(context); // Closes the dialog
+                },
+                child: Text(
+                  'Ok',
+                  style: Util.txt(Palette.black, 16, FontWeight.w600),
+                ),
+              ),
             ],
           );
         },
-        animationType: DialogTransitionType.slideFromLeftFade,
-        curve: Curves.fastOutSlowIn,
-        duration: const Duration(seconds: 1),
       );
     } else {
       showCupertinoDialog(
@@ -135,42 +134,45 @@ class Util {
   static showLoginPop(
       BuildContext context, String msg, Map<String, dynamic> share) {
     if (Platform.isAndroid) {
-      showAnimatedDialog(
+      showDialog(
         context: context,
-        barrierDismissible: true,
+        barrierDismissible: true, // Allows the dialog to be dismissed by tapping outside
         builder: (BuildContext context) {
-          return ClassicGeneralDialogWidget(
-            titleText: msg,
-            // contentText: msg,
+          return AlertDialog(
+            title: Text(
+              msg,
+              style: Util.txt(Palette.black, 16, FontWeight.w600),
+            ),
             actions: [
               TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text(
-                    'Cancel',
-                    style: Util.txt(Palette.black, 16, FontWeight.w600),
-                  )),
+                onPressed: () {
+                  Navigator.pop(context); // Closes the dialog
+                },
+                child: Text(
+                  'Cancel',
+                  style: Util.txt(Palette.black, 16, FontWeight.w600),
+                ),
+              ),
               TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => Login(
-                                  share: share,
-                                )));
-                  },
-                  child: Text(
-                    'Login',
-                    style: Util.txt(Palette.black, 16, FontWeight.w600),
-                  )),
+                onPressed: () {
+                  Navigator.pop(context); // Closes the dialog
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Login(
+                        share: share,
+                      ),
+                    ),
+                  );
+                },
+                child: Text(
+                  'Login',
+                  style: Util.txt(Palette.black, 16, FontWeight.w600),
+                ),
+              ),
             ],
           );
         },
-        animationType: DialogTransitionType.slideFromLeftFade,
-        curve: Curves.fastOutSlowIn,
-        duration: const Duration(seconds: 1),
       );
     } else {
       showCupertinoDialog(
@@ -221,28 +223,32 @@ class Util {
 
 ////////------------------------- Dialog-----------------------------------------
   static customDialog(String title, String message, BuildContext context) {
-    showAnimatedDialog(
+    showDialog(
       context: context,
-      barrierDismissible: true,
+      barrierDismissible: true, // Allows the dialog to be dismissed by tapping outside
       builder: (BuildContext context) {
-        return ClassicGeneralDialogWidget(
-          titleText: title,
-          contentText: message,
+        return AlertDialog(
+          title: Text(
+            title,
+            style: Util.txt(Palette.black, 16, FontWeight.w600),
+          ),
+          content: Text(
+            message,
+            style: Util.txt(Palette.black, 14, FontWeight.w400),
+          ),
           actions: [
             TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Text(
-                  'Ok',
-                  style: Util.txt(Palette.black, 16, FontWeight.w600),
-                )),
+              onPressed: () {
+                Navigator.pop(context); // Closes the dialog
+              },
+              child: Text(
+                'Ok',
+                style: Util.txt(Palette.black, 16, FontWeight.w600),
+              ),
+            ),
           ],
         );
       },
-      animationType: DialogTransitionType.slideFromTopFade,
-      curve: Curves.fastOutSlowIn,
-      duration: const Duration(seconds: 1),
     );
   }
   //--------------------------- Notification -----------------------------------------

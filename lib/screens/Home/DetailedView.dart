@@ -463,9 +463,11 @@ class _DetailedViewState extends State<DetailedView> {
     }
     else{
       Map<String,String>map={'userid':userid,'itemcode':itemcode,'count':count.toString(),'client':Util.clientName};
+      print('Payload carttemp is: $map');
       var response = await http.post(Uri.parse('${Util.baseurl}carttemp.php'),body: jsonEncode(map));
       try{
         if(response.statusCode==200){
+          print('carttemp value: ${response.body}');
           var dec = jsonDecode(response.body);
           if(dec['status']=='1'){
             c.cart.value=dec['count'];

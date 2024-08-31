@@ -343,10 +343,12 @@ class _ProductListState extends State<ProductList> {
     }
     else{
       Map<String,String>map={'userid':userid,'itemcode':itemcode,'count':count.toString(),'client':Util.clientName};
+      print('Payload carttemp is: $map');
       var response = await http.post(Uri.parse('${Util.baseurl}carttemp.php'),body: jsonEncode(map));
       try{
         if(response.statusCode==200){
           var dec = jsonDecode(response.body);
+          print('carttemp value: ${response.body}');
           if(dec['status']=='1'){
            Util.control.cart.value=dec['count'];
           }

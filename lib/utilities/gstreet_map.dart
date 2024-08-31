@@ -308,11 +308,10 @@ class _MyMapPickerState extends State<MyMapPicker> {
         Util.addStringToSF('longvalue', longString, '');*/
     final GoogleMapController mapController = await _controller.future;
     mapController.animateCamera(CameraUpdate.newCameraPosition(
-        CameraPosition(target: LatLng(res.latitude, res.longitude), zoom: 20)));
-    setState(() {});
+        CameraPosition(target:LatLng(res.latitude, res.longitude), zoom: 20)));
+    setState((){});
   }
-
-  shipmentCheck() async {
+  shipmentCheck()async{
     Util.showProgress(context);
     Util.logDebug('$latString,$longString');
     var personInfoString = '$latString,$longString';

@@ -38,6 +38,7 @@ class _NavigationItemBarState extends State<NavigationItemBar> {
       final response = await http.Response.fromStream(snd);
       if (response.statusCode == 200) {
         var dec = jsonDecode(response.body);
+        print('Cart Value: ${dec}');
         if (dec['success']) {
           if (dec['count'] != null) {
             c.cart.value = dec['count'];
@@ -46,6 +47,7 @@ class _NavigationItemBarState extends State<NavigationItemBar> {
       }
     } catch (e) {
       Util.logDebug('nav Error $e');
+      print('Error Occured');
     }
   }
   @override
@@ -71,6 +73,7 @@ class _NavigationItemBarState extends State<NavigationItemBar> {
                         onTap: () => nav(0),
                         child: Card(
                           elevation: 0,
+                          color: Colors.white,
                           margin: EdgeInsets.zero,
                           child: Icon(
                             Feather.home,
@@ -84,6 +87,7 @@ class _NavigationItemBarState extends State<NavigationItemBar> {
                         onTap: () => nav(1),
                         child: Card(
                           elevation: 0,
+                          color: Colors.white,
                           margin: EdgeInsets.zero,
                           child: Icon(
                             Ionicons.list,
@@ -97,6 +101,7 @@ class _NavigationItemBarState extends State<NavigationItemBar> {
                         onTap: () => nav(2),
                         child: Card(
                           elevation: 0,
+                          color: Colors.white,
                           margin: EdgeInsets.zero,
                           child: Icon(
                             Ionicons.search_outline,
@@ -109,12 +114,12 @@ class _NavigationItemBarState extends State<NavigationItemBar> {
                     InkWell(
                         onTap: () => nav(3),
                         child: badge.Badge(
-                            shape: badge.BadgeShape.circle,
-                            badgeColor: Palette.white,
-                            borderSide:
-                                BorderSide(color: Palette.black, width: 1),
-                            position:
-                                const badge.BadgePosition(end: -16, top: -12),
+                            // shape: badge.BadgeShape.circle,
+                            // badgeColor: Palette.white,
+                            // borderSide:
+                            //     BorderSide(color: Palette.black, width: 1),
+                            // position:
+                            //     const badge.BadgePosition(end: -16, top: -12),
                             badgeContent: Center(
                                 child: Text(c.cart.toString(),
                                     style: Util.txt(
@@ -122,6 +127,7 @@ class _NavigationItemBarState extends State<NavigationItemBar> {
                                     softWrap: true)),
                             child: Card(
                               elevation: 0,
+                              color: Colors.white,
                               margin: EdgeInsets.zero,
                               child: Icon(
                                 Ionicons.cart_outline,
@@ -135,6 +141,7 @@ class _NavigationItemBarState extends State<NavigationItemBar> {
                         onTap: () => nav(4),
                         child: Card(
                           elevation: 0,
+                          color: Colors.white,
                           margin: EdgeInsets.zero,
                           child: Icon(
                             Feather.user,

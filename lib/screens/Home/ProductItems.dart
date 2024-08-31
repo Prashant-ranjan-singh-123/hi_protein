@@ -1,11 +1,12 @@
 import 'dart:convert';
 import 'package:fancy_shimmer_image/fancy_shimmer_image.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:get/get.dart';
+import 'package:hi_protein/screens/Payment/OrderDetailView.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import '../../Connectivity/No_internet.dart';
@@ -30,10 +31,12 @@ class _ProductItemsState extends State<ProductItems> {
   String deliveryCode = 'Check Delivery Availability', deliveraddress = '';
   TextEditingController pincode = TextEditingController();
   int count = 1;
+  final FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
   @override
   void initState() {
     Provider.of<ConnectivityProvider>(context, listen: false).startMonitoring();
     super.initState();
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message){if(message.data['screen_name']=='order_details'){setState((){Navigator.push(context,MaterialPageRoute(builder:(context) =>OrderDetailView(share:{'id':message.data['id']},)));});}});
     getImages();
     getData();
     _controllerOne.addListener(lazyLoading);
@@ -456,29 +459,41 @@ class _ProductItemsState extends State<ProductItems> {
     }
   }
   confDial( String title, String message,) {
-      showAnimatedDialog(
+    showDialog(
       context: context,
-      barrierDismissible: true,
+      barrierDismissible: true, // Allows the dialog to be dismissed by tapping outside of it
       builder: (BuildContext context) {
-        return ClassicGeneralDialogWidget(
-          titleText: title,
-          contentText: message,
+        return AlertDialog(
+          title: Text(
+            title,
+            style: Util.txt(Palette.black, 16, FontWeight.w600),
+          ),
+          content: Text(
+            message,
+            style: Util.txt(Palette.black, 16, FontWeight.w400),
+          ),
           actions: [
             TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  Navigator.push(context,MaterialPageRoute( builder: (context) => const MyMapPicker()));
-                },
-                child: Text(
-                  'Ok',
-                  style: Util.txt(Palette.black, 16, FontWeight.w600),
-                )),
+              onPressed: () {
+                Navigator.pop(context); // Closes the dialog
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const MyMapPicker()),
+                ); // Navigates to the next screen
+              },
+              child: Text(
+                'Ok',
+                style: Util.txt(Palette.black, 16, FontWeight.w600),
+              ),
+            ),
           ],
+          // Optional: Add elevation and shape to match your design
+          elevation: 24.0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12.0),
+          ),
         );
       },
-      animationType: DialogTransitionType.slideFromLeftFade,
-      curve: Curves.fastOutSlowIn,
-      duration: const Duration(seconds: 1),
     );
   }
   void openActions() {

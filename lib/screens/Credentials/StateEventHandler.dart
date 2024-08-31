@@ -37,8 +37,7 @@ class LifecycleEventHandler extends WidgetsBindingObserver {
   checkForStatusMethod() {
     availibilityCheck();
   }
-
-  availibilityCheck() async {
+  availibilityCheck()async {
     String userid = await Util.getStringValuesSF('userid');
     try {
       final availabilityCheck =http.MultipartRequest('POST', Uri.parse('${Util.baseurl}availability.php'));

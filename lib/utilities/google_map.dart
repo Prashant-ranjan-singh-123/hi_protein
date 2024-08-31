@@ -23,16 +23,16 @@ class _MyMapState extends State<MyMap> {
   GoogleMapController? _controller ;
   Position? position;
   Widget? _child;
-  bool servicestatus = false, haspermission = false;
+  bool servicestatus=false,haspermission=false;
   String address = '';
   @override
-  void initState() {
+  void initState(){
     getLocation();
     super.initState();
   }
   void _getCurrentLocation() async{
     Position res = await Geolocator.getCurrentPosition();
-    setState(() {
+    setState((){
       position = res;
       _child = _mapWidget();
     });
@@ -62,14 +62,14 @@ class _MyMapState extends State<MyMap> {
             ),
     );
   }
-  Future<void> getLocation() async {
+  Future<void> getLocation()async{
    servicestatus = await Geolocator.isLocationServiceEnabled();
-   if (!servicestatus) {
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('Location services are disabled. Please enable the services')));
-    return ;
-  }
-    if (servicestatus) {
+    if (!servicestatus) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Location services are disabled. Please enable the services')));
+      return;
+    }
+    if(servicestatus){
       LocationPermission permission = await Geolocator.checkPermission();
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();

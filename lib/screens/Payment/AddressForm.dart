@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
@@ -100,6 +99,7 @@ class _AddressFormState extends State<AddressForm> {
               cursorColor: Palette.black,
               keyboardType: TextInputType.text,
               textInputAction: TextInputAction.next,
+              inputFormatters:[FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z\s]')),],
               style: Util.txt(Palette.black, 14, FontWeight.w400),
               decoration: InputDecoration(
                 hintText: 'Enter First name',
@@ -121,6 +121,7 @@ class _AddressFormState extends State<AddressForm> {
               cursorColor: Palette.black,
               keyboardType: TextInputType.text,
               textInputAction: TextInputAction.next,
+              inputFormatters:[FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z\s]')),],
               style: Util.txt(Palette.black, 14, FontWeight.w400),
               decoration: InputDecoration(
                 hintText: 'Enter Last name',
@@ -190,6 +191,7 @@ class _AddressFormState extends State<AddressForm> {
               cursorColor: Palette.black,
               keyboardType: TextInputType.text,
               textInputAction: TextInputAction.next,
+              inputFormatters:[FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z\s]')),],
               style: Util.txt(Palette.black, 14, FontWeight.w400),
               decoration: InputDecoration(
                 hintText: 'Enter City',
@@ -211,6 +213,7 @@ class _AddressFormState extends State<AddressForm> {
               cursorColor: Palette.black,
               keyboardType: TextInputType.text,
               textInputAction: TextInputAction.next,
+              inputFormatters:[FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z\s]')),],
               style: Util.txt(Palette.black, 14, FontWeight.w400),
               decoration: InputDecoration(
                 hintText: 'Enter State',
@@ -405,51 +408,61 @@ class _AddressFormState extends State<AddressForm> {
         Util.logDebug('response: $dec');
         if (dec['success']) {
           // ignore: use_build_context_synchronously
-          showAnimatedDialog(
+          showDialog(
             context: context,
-            barrierDismissible: true,
+            barrierDismissible: true, // Allows dismissal by tapping outside the dialog
             builder: (BuildContext context) {
-              return ClassicGeneralDialogWidget(
-                contentText: dec['message'],
+              return AlertDialog(
+                content: Text(
+                  dec['message'], // Ensure `dec` contains the message you want to display
+                  style: Util.txt(Palette.black, 16, FontWeight.w400),
+                ),
                 actions: [
                   TextButton(
-                      onPressed:(){
-                        Navigator.pop(context);
-                        Navigator.push(context,MaterialPageRoute(builder:(context) => const DeliveryAddress()));
-                      },
-                      child:Text(
-                        'Ok',
-                        style: Util.txt(Palette.black, 16, FontWeight.w600),
-                      )),
+                    onPressed: () {
+                      Navigator.pop(context); // Closes the dialog
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const DeliveryAddress(),
+                        ),
+                      );
+                    },
+                    child: Text(
+                      'Ok',
+                      style: Util.txt(Palette.black, 16, FontWeight.w600),
+                    ),
+                  ),
                 ],
+                // Optional: Add elevation and shape to mimic the original dialog's style
+                elevation: 24.0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12.0),
+                ),
               );
             },
-            animationType: DialogTransitionType.slideFromTopFade,
-            curve: Curves.fastOutSlowIn,
-            duration: const Duration(seconds: 1),
           );
         } else {
-          showAnimatedDialog(
+          showDialog(
             context: context,
             barrierDismissible: true,
             builder: (BuildContext context) {
-              return ClassicGeneralDialogWidget(
-                contentText: dec['message'],
+              return AlertDialog(
+                title: Text('Alert'),
+                content: Text(dec['message']),
                 actions: [
                   TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: Text(
-                        'Ok',
-                        style: Util.txt(Palette.black, 16, FontWeight.w600),
-                      )),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text(
+                      'Ok',
+                      style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w600),
+                    ),
+                  ),
                 ],
               );
             },
-            animationType: DialogTransitionType.slideFromTopFade,
-            curve: Curves.fastOutSlowIn,
-            duration: const Duration(seconds: 1),
           );
         }
       } else {

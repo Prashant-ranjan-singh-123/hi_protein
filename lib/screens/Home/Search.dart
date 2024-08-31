@@ -556,11 +556,13 @@ class _SearchState extends State<Search> {
         'count': count.toString(),
         'client': Util.clientName
       };
+      print('Payload carttemp is: $map');
       var response = await http.post(Uri.parse('${Util.baseurl}carttemp.php'),
           body: jsonEncode(map));
       try {
         if (response.statusCode == 200) {
           var dec = jsonDecode(response.body);
+          print('carttemp value: ${response.body}');
           if (dec['status'] == '1') {
             Util.control.cart.value = dec['count'];
           }

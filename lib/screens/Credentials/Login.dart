@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -71,7 +70,7 @@ class _LoginState extends State<Login> {
   Widget checkConnection() {
     return Consumer<ConnectivityProvider>(
       builder: (consumerContext, model, child) {
-        return model.isOnline ? page() : NoInternet();
+        return model.isOnline?page():const NoInternet();
       },
     );
   }
@@ -245,7 +244,6 @@ class _LoginState extends State<Login> {
       ),
     );
   }
-
   Widget pinPutStyle() {
     const length = 6;
     const borderColor = Colors.red;
@@ -265,7 +263,7 @@ class _LoginState extends State<Login> {
     return SizedBox(
       height: 50,
       child: Pinput(
-        androidSmsAutofillMethod: AndroidSmsAutofillMethod.smsRetrieverApi,
+        // androidSmsAutofillMethod: AndroidSmsAutofillMethod.smsRetrieverApi,
         length: length,
         controller: otp,
         focusNode: focusNode,
@@ -383,7 +381,7 @@ class _LoginState extends State<Login> {
       if (response.statusCode == 200) {
         Util.dismissDialog(_scaffoldkey.currentContext!);
         var dec = jsonDecode(response.body);
-        if (dec['success']) {
+        if (dec['success']){
           setState(() {
             focusNode.requestFocus();
             showPass = true;
@@ -410,53 +408,61 @@ class _LoginState extends State<Login> {
       loginCheck.fields['otp'] = otp.text;
       loginCheck.fields['type'] = a.toString();
       loginCheck.fields['client'] = Util.clientName;
+      print('Otp Sent is: ${otp.text}');
       final snd = await loginCheck.send();
       final response = await http.Response.fromStream(snd);
       if (response.statusCode == 200) {
         Util.dismissDialog(_scaffoldkey.currentContext!);
         var dec = jsonDecode(response.body);
+        print('Otp Check Response data: ${dec}');
         if (dec['success']) {
           Util.addStringToSF('userid', dec['response'][0]['userid'].toString(),'');
           Util.updateNotification();
           navHome();
           // confirmMsg('Success',dec['message'],1);
-        } else {
+        }else {
           confirmMsg('Fail', dec['message'], 0);
         }
       } else {
         Util.dismissDialog(_scaffoldkey.currentContext!);
+        print('Otp Check Response Error Code: ${response.statusCode}');
       }
     } catch (e) {
       Util.logDebug(e);
+      print('Api Error');
     }
   }
   confirmMsg(String title, body, int a) {
     if (Platform.isAndroid) {
-      showAnimatedDialog(
+      showDialog(
         context: context,
-        barrierDismissible: true,
+        barrierDismissible: true, // Allows the dialog to be dismissed by tapping outside
         builder: (BuildContext context) {
-          return ClassicGeneralDialogWidget(
-            titleText: title,
-            contentText: body,
+          return AlertDialog(
+            title: Text(
+              title,
+              style: Util.txt(Palette.black, 16, FontWeight.w500),
+            ),
+            content: Text(
+              body,
+              style: Util.txt(Palette.black, 14, FontWeight.w400),
+            ),
             actions: [
               TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    if (a == 1) {
-                      navHome();
-                    }
-                  },
-                  child: Text(
-                    'Ok',
-                    style: Util.txt(Palette.black, 16, FontWeight.w500),
-                  )),
+                onPressed: () {
+                  Navigator.pop(context); // Closes the dialog
+                  if (a == 1) {
+                    navHome(); // Navigate to home if condition is met
+                  }
+                },
+                child: Text(
+                  'Ok',
+                  style: Util.txt(Palette.black, 16, FontWeight.w500),
+                ),
+              ),
             ],
           );
         },
-        animationType: DialogTransitionType.slideFromLeftFade,
-        curve: Curves.fastOutSlowIn,
-        duration: const Duration(seconds: 1),
       );
     } else {
       showCupertinoDialog(

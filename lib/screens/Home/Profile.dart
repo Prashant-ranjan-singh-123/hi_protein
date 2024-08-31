@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
@@ -581,37 +580,47 @@ class _ProfileState extends State<Profile> {
 
   logoutConfirm() {
     if (Platform.isAndroid) {
-      showAnimatedDialog(
+      showDialog(
         context: context,
-        barrierDismissible: true,
+        barrierDismissible: true, // Allows dismissal by tapping outside the dialog
         builder: (BuildContext context) {
-          return ClassicGeneralDialogWidget(
-            titleText: 'Logout',
-            contentText: 'Are you sure you want to logout',
+          return AlertDialog(
+            title: Text(
+              'Logout',
+              style: Util.txt(Palette.black, 16, FontWeight.w600),
+            ),
+            content: Text(
+              'Are you sure you want to logout',
+              style: Util.txt(Palette.black, 16, FontWeight.w400),
+            ),
             actions: [
               TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text(
-                    'Cancel',
-                    style: Util.txt(Palette.black, 16, FontWeight.w600),
-                  )),
+                onPressed: () {
+                  Navigator.pop(context); // Closes the dialog
+                },
+                child: Text(
+                  'Cancel',
+                  style: Util.txt(Palette.black, 16, FontWeight.w600),
+                ),
+              ),
               TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    logOut();
-                  },
-                  child: Text(
-                    'Ok',
-                    style: Util.txt(Palette.black, 16, FontWeight.w600),
-                  )),
+                onPressed: () {
+                  Navigator.pop(context); // Closes the dialog
+                  logOut(); // Calls the logout function
+                },
+                child: Text(
+                  'Ok',
+                  style: Util.txt(Palette.black, 16, FontWeight.w600),
+                ),
+              ),
             ],
+            // Optional: Add elevation and shape to match your design
+            elevation: 24.0,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12.0),
+            ),
           );
         },
-        animationType: DialogTransitionType.slideFromLeftFade,
-        curve: Curves.fastOutSlowIn,
-        duration: const Duration(seconds: 1),
       );
     } else {
       showCupertinoDialog(
@@ -648,37 +657,47 @@ class _ProfileState extends State<Profile> {
 
   confirmMsg() {
     if (Platform.isAndroid) {
-      showAnimatedDialog(
+      showDialog(
         context: context,
-        barrierDismissible: true,
+        barrierDismissible: true, // Allows the dialog to be dismissed by tapping outside of it
         builder: (BuildContext context) {
-          return ClassicGeneralDialogWidget(
-            titleText: 'Delete',
-            contentText: 'Are you sure want to delete account',
+          return AlertDialog(
+            title: Text(
+              'Delete',
+              style: Util.txt(Palette.black, 16, FontWeight.w500),
+            ),
+            content: Text(
+              'Are you sure you want to delete the account?',
+              style: Util.txt(Palette.black, 16, FontWeight.w400),
+            ),
             actions: [
               TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text(
-                    'Cancel',
-                    style: Util.txt(Palette.black, 16, FontWeight.w500),
-                  )),
+                onPressed: () {
+                  Navigator.pop(context); // Closes the dialog
+                },
+                child: Text(
+                  'Cancel',
+                  style: Util.txt(Palette.black, 16, FontWeight.w500),
+                ),
+              ),
               TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    deleteAccount();
-                  },
-                  child: Text(
-                    'Ok',
-                    style: Util.txt(Palette.black, 16, FontWeight.w500),
-                  )),
+                onPressed: () {
+                  Navigator.pop(context); // Closes the dialog
+                  deleteAccount(); // Calls the function to delete the account
+                },
+                child: Text(
+                  'Ok',
+                  style: Util.txt(Palette.black, 16, FontWeight.w500),
+                ),
+              ),
             ],
+            // Optional: Add elevation and shape to match your design
+            elevation: 24.0,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12.0),
+            ),
           );
         },
-        animationType: DialogTransitionType.slideFromLeftFade,
-        curve: Curves.fastOutSlowIn,
-        duration: const Duration(seconds: 1),
       );
     } else {
       showCupertinoDialog(

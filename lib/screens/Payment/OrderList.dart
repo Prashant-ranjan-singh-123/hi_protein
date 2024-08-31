@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
@@ -305,32 +304,38 @@ class _MyOrdersListState extends State<MyOrdersList> {
     String title,
     String message,
   ) {
-    showAnimatedDialog(
+    showDialog(
       context: context,
-      barrierDismissible: true,
+      barrierDismissible: true, // Allows dismissal by tapping outside
       builder: (BuildContext context) {
-        return ClassicGeneralDialogWidget(
-          titleText: title,
-          contentText: message,
+        return AlertDialog(
+          title: Text(
+            title,
+            style: Util.txt(Palette.black, 16, FontWeight.w600),
+          ),
+          content: Text(
+            message,
+            style: Util.txt(Palette.black, 14, FontWeight.w400),
+          ),
           actions: [
             TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const CartList()));
-                },
-                child: Text(
-                  'Ok',
-                  style: Util.txt(Palette.black, 16, FontWeight.w600),
-                )),
+              onPressed: () {
+                Navigator.pop(context); // Close the dialog
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const CartList(), // Navigate to CartList
+                  ),
+                );
+              },
+              child: Text(
+                'Ok',
+                style: Util.txt(Palette.black, 16, FontWeight.w600),
+              ),
+            ),
           ],
         );
       },
-      animationType: DialogTransitionType.slideFromLeftFade,
-      curve: Curves.fastOutSlowIn,
-      duration: const Duration(seconds: 1),
     );
   }
 }

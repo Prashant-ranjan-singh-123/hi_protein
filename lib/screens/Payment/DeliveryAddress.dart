@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:get/get.dart';
 import 'package:hi_protein/screens/Payment/payment_details.dart';
@@ -458,36 +457,38 @@ class _DeliveryAddressState extends State<DeliveryAddress> {
   }
 
   confirmation(String id){
-    showAnimatedDialog(
+    showDialog(
       context: context,
-      barrierDismissible: true,
+      barrierDismissible: true, // Allows dismissing by tapping outside
       builder: (BuildContext context) {
-        return ClassicGeneralDialogWidget(
-          contentText: 'Delete address',
+        return AlertDialog(
+          content: Text(
+            'Delete address',
+            style: Util.txt(Palette.black, 16, FontWeight.w600),
+          ),
           actions: [
             TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Text(
-                  'Cancel',
-                  style: Util.txt(Palette.black, 16, FontWeight.w600),
-                )),
+              onPressed: () {
+                Navigator.pop(context); // Closes the dialog
+              },
+              child: Text(
+                'Cancel',
+                style: Util.txt(Palette.black, 16, FontWeight.w600),
+              ),
+            ),
             TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  deleteAddress(id);
-                },
-                child: Text(
-                  'Delete',
-                  style: Util.txt(Palette.black, 16, FontWeight.w600),
-                )),
+              onPressed: () {
+                Navigator.pop(context); // Closes the dialog
+                deleteAddress(id); // Call your delete address function
+              },
+              child: Text(
+                'Delete',
+                style: Util.txt(Palette.black, 16, FontWeight.w600),
+              ),
+            ),
           ],
         );
       },
-      animationType: DialogTransitionType.slideFromLeftFade,
-      curve: Curves.fastOutSlowIn,
-      duration: const Duration(seconds: 1),
     );
   }
 
@@ -589,6 +590,7 @@ class _DeliveryAddressState extends State<DeliveryAddress> {
     stam = respon.statusCode.toString();
     try {
       if (respon.statusCode == 200) {
+        print('updatetempcart value: ${respon.body}');
       } else {
         Map<String, String> map = {
           'email': userid,
@@ -665,32 +667,38 @@ class _DeliveryAddressState extends State<DeliveryAddress> {
         Util.dismissDialog(_scafoldkey.currentContext!);
         var decc = jsonDecode(respo.body);
         if (decc['success'] == 'true') {
-          showAnimatedDialog(
+          showDialog(
             context: context,
-            barrierDismissible: false,
+            barrierDismissible: false, // Prevents dismissing by tapping outside
             builder: (BuildContext context) {
-              return ClassicGeneralDialogWidget(
-                titleText: 'Payment Success',
-                contentText: decc['message'],
+              return AlertDialog(
+                title: Text(
+                  'Payment Success',
+                  style: Util.txt(Palette.black, 16, FontWeight.w600),
+                ),
+                content: Text(
+                  decc['message'],
+                  style: Util.txt(Palette.black, 16, FontWeight.w400),
+                ),
                 actions: [
                   TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const MyOrdersList()));
-                      },
-                      child: Text(
-                        'Ok',
-                        style: Util.txt(Palette.black, 16, FontWeight.w600),
-                      )),
+                    onPressed: () {
+                      Navigator.pop(context); // Closes the dialog
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const MyOrdersList(),
+                        ),
+                      );
+                    },
+                    child: Text(
+                      'Ok',
+                      style: Util.txt(Palette.black, 16, FontWeight.w600),
+                    ),
+                  ),
                 ],
               );
             },
-            animationType: DialogTransitionType.slideFromLeftFade,
-            curve: Curves.fastOutSlowIn,
-            duration: const Duration(seconds: 1),
           );
         } else {
           Map<String, String> map = {

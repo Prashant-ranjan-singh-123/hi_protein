@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import '../../../Connectivity/No_internet.dart';
@@ -82,7 +83,8 @@ class _CategoryListState extends State<CategoryList> {
       child: Container(
         color: Palette.white,
         child: Padding(
-          padding: EdgeInsets.fromLTRB(0, 0, 0, Platform.isAndroid ? 0 : 20),
+          // padding: EdgeInsets.fromLTRB(0, 0, 0, Platform.isAndroid ? 0 : 20),
+          padding: EdgeInsets.all(0),
           child: Scaffold(
             backgroundColor: Palette.background,
             appBar: AppBar(
@@ -97,13 +99,13 @@ class _CategoryListState extends State<CategoryList> {
               centerTitle: true,
             ),
             body: checkConnection(),
-            bottomSheet: Container(
-              color: Palette.white,
-              height: 50,
-              child: const NavigationItemBar(
-                state: 1,
-              ),
-            ),
+            // bottomSheet: Container(
+            //   // color: Palette.white,
+            //   height: Util.bottomNavBarHeight,
+            //   child: const NavigationItemBar(
+            //     state: 1,
+            //   ),
+            // ),
           ),
         ),
       ),
@@ -118,7 +120,7 @@ class _CategoryListState extends State<CategoryList> {
     );
   }
 
-  page() {
+  page1() {
     return category.isNotEmpty
         ? Padding(
             padding: const EdgeInsets.all(8.0),
@@ -163,4 +165,93 @@ class _CategoryListState extends State<CategoryList> {
             child: CupertinoActivityIndicator(),
           );
   }
+
+  Widget page() {
+    print(category.length);
+    if (category.isNotEmpty) {
+      return Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // Lottie animation at the top
+              SizedBox(
+                width: MediaQuery.of(context).size.width*0.7, // Adjust the height as needed
+                height: MediaQuery.of(context).size.width*0.7,
+                child: Lottie.asset('assets/lottie/category_list.json'),
+              ),
+
+              Padding(
+                padding: const EdgeInsets.only(bottom: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Explore Our Dishes', style: Util.txt(Palette.black, 20, FontWeight.w600),),
+                    Text('Delight in a variety of expertly crafted dishes made with fresh, high-quality ingredients.', style: Util.txt(Palette.black, 12, FontWeight.w300),),
+                  ],
+                ),
+              ),
+              // GridView inside a Container with a fixed height
+              Container(
+                height: MediaQuery.of(context).size.height * 0.7, // Adjust as needed
+                child: GridView.builder(
+                  physics: const NeverScrollableScrollPhysics(),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 15.0,
+                    mainAxisSpacing: 15.0,
+                  ),
+                  itemCount: category.length,
+                  itemBuilder: (context, index) {
+                    final e = category[index];
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ProductList(
+                              name: e.name,
+                              state: 1,
+                            ),
+                          ),
+                        );
+                      },
+                      child: Card(
+                        color: Palette.blue_tone_white,
+                        elevation: 20,
+                        shadowColor: Palette.blue_tone_light_4,
+                        surfaceTintColor: Colors.white,
+                        margin: const EdgeInsets.fromLTRB(0, 0, 0, 1),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min, // Ensure Column does not overflow
+                          children: [
+                            AspectRatio(
+                              aspectRatio: 1 / 0.7, // Adjust as needed
+                              child: Lottie.asset('assets/lottie/dish_prepare.json'),
+                            ),
+                            Text(
+                              e.name.capitalize.toString(),
+                              style: Util.txt(Palette.black, 18, FontWeight.w700),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 50), // Space at the bottom if needed
+            ],
+          ),
+        ),
+      );
+    } else {
+      return const Center(
+        child: CupertinoActivityIndicator(),
+      );
+    }
+  }
+
 }

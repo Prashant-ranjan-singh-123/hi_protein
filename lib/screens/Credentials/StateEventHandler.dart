@@ -45,8 +45,10 @@ class LifecycleEventHandler extends WidgetsBindingObserver {
       availabilityCheck.fields['userid'] = userid;
       final snd = await availabilityCheck.send();
       final response = await http.Response.fromStream(snd);
+      print('availability.php response code: ${response.statusCode}');
       if (response.statusCode == 200) {
         var dec = jsonDecode(response.body);
+        print('availability.php data: ${response.body}');
         if (dec['status'] == '1') {
           isavailable = true;
           Util.addStringToSF('availability', dec['status'].toString(),'');

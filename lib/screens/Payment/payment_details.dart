@@ -16,6 +16,7 @@ import '../../utilities/AppManagement.dart';
 import '../../utilities/constants.dart';
 import '../../utilities/palette.dart';
 import '../Home/bottom_nav_4th_item_cart/CartList.dart';
+import '../Home/bottom_nav_bar.dart';
 import 'DeliveryAddress.dart';
 import 'OrderList.dart';
 import 'payment_screen.dart';
@@ -452,7 +453,7 @@ class _PaymentDetailsState extends State<PaymentDetails> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const CartList()));
+                          builder: (context) => NavigationItemBar(state: 3)));
                   //Navigator.of(context).pop();
                 }),
           ],
@@ -770,7 +771,7 @@ class _PaymentDetailsState extends State<PaymentDetails> {
                 Navigator.pop(context); // Closes the dialog
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const CartList()),
+                  MaterialPageRoute(builder: (context) => NavigationItemBar(state: 3)),
                 ); // Navigate to CartList
               },
               child: Text(

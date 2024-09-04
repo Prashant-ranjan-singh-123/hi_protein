@@ -200,6 +200,8 @@ class _MapSearchPlacesState extends State<MapSearchPlaces> {
                 onPressed: () {
                   latString = cameraPosition.target.latitude.toString();
                   longString = cameraPosition.target.longitude.toString();
+                  print('Lat is: ${latString}');
+                  print('Longit is: ${longString}');
                   shipmentCheck();
                 },
                 style: ButtonStyle(
@@ -281,10 +283,12 @@ class _MapSearchPlacesState extends State<MapSearchPlaces> {
     shipCheck.fields['droplng'] = longString;
     var resu = await shipCheck.send();
     var response = await http.Response.fromStream(resu);
+    print('Response code is: ${response.statusCode}');
     try {
       if (response.statusCode == 200) {
         Util.dismissDialog(context);
         var dec = jsonDecode(response.body);
+        print('Response body is: ${response.body}');
         Util.logDebug(dec);
         if (dec['success'] == true) {
           Util.addStringToSF('latlang',personInfoString,'');

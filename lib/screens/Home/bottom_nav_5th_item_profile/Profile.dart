@@ -12,6 +12,7 @@ import '../../../Connectivity/connectivity_provider.dart';
 import '../../../Model/Product_Model.dart';
 import '../../../utilities/AppManagement.dart';
 import '../../../utilities/constants.dart';
+import '../../../utilities/images.dart';
 import '../../../utilities/palette.dart';
 import '../../../utilities/web_privacy.dart';
 import '../../../utilities/web_view.dart';
@@ -119,18 +120,19 @@ class _ProfileState extends State<Profile> {
       child: Container(
         color: Palette.white,
         child: Padding(
-          padding: EdgeInsets.fromLTRB(0, 0, 0, Platform.isAndroid ? 0 : 20),
+          // padding: EdgeInsets.fromLTRB(0, 0, 0, Platform.isAndroid ? 0 : 20),
+          padding: EdgeInsets.all(0),
           child: Scaffold(
             key: scaffoldKey,
             backgroundColor: Palette.background,
             body: SafeArea(child: checkConnection()),
-            bottomSheet: Container(
-              color: Palette.white,
-              height: 50,
-              child: const NavigationItemBar(
-                state: 4,
-              ),
-            ),
+            // bottomSheet: Container(
+            //   // color: Palette.white,
+            //   height: Util.bottomNavBarHeight,
+            //   child: const NavigationItemBar(
+            //     state: 4,
+            //   ),
+            // ),
           ),
         ),
       ),
@@ -146,425 +148,408 @@ class _ProfileState extends State<Profile> {
   }
 
   page() {
-    return Padding(
-      padding: const EdgeInsets.all(40.0),
-      child: Stack(
-        alignment: Alignment.topCenter,
+    return SingleChildScrollView(
+      child: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(0, 90, 0, 0),
-            child: Column(
-              children: [
-                Card(
-                  color: Palette.white,
-                  shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(10.0),
-                          topRight: Radius.circular(10.0))),
-                  child: Container(
-                    decoration: BoxDecoration(
-                        color: Palette.white,
-                        borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(10.0),
-                            topRight: Radius.circular(10.0))),
+          // profile.isNotEmpty
+          //     ? Container(
+          //         decoration: BoxDecoration(
+          //           color: Palette.color1,
+          //           borderRadius: BorderRadius.circular(10),
+          //         ),
+          //         child: Padding(
+          //           padding: const EdgeInsets.all(10.0),
+          //           child: Column(
+          //             children: [
+          //               Padding(
+          //                 padding: const EdgeInsets.fromLTRB(
+          //                     0, 0, 0, 10),
+          //                 child: Row(
+          //                   mainAxisAlignment:
+          //                       MainAxisAlignment.center,
+          //                   children: [
+          //                     Text(
+          //                       profile[0].name.toUpperCase(),
+          //                       style: Util.txt(Palette.proTxt,
+          //                           16, FontWeight.w500),
+          //                     ),
+          //                   ],
+          //                 ),
+          //               ),
+          //               Padding(
+          //                 padding: const EdgeInsets.fromLTRB(
+          //                     0, 0, 0, 10),
+          //                 child: Row(
+          //                   mainAxisAlignment:
+          //                       MainAxisAlignment.center,
+          //                   children: [
+          //                     Text(
+          //                       profile[0].email,
+          //                       style: Util.txt(Palette.proTxt,
+          //                           14, FontWeight.w500),
+          //                     ),
+          //                   ],
+          //                 ),
+          //               ),
+          //               Padding(
+          //                 padding: const EdgeInsets.fromLTRB(
+          //                     0, 0, 0, 10),
+          //                 child: Row(
+          //                   mainAxisAlignment:
+          //                       MainAxisAlignment.center,
+          //                   children: [
+          //                     Text(
+          //                       profile[0].mobile,
+          //                       style: Util.txt(Palette.proTxt,
+          //                           14, FontWeight.w500),
+          //                     ),
+          //                   ],
+          //                 ),
+          //               ),
+          //               Padding(
+          //                 padding: const EdgeInsets.fromLTRB(
+          //                     0, 0, 0, 10),
+          //                 child: Row(
+          //                   mainAxisAlignment:
+          //                       MainAxisAlignment.center,
+          //                   children: [
+          //                     Flexible(
+          //                         child: Text(
+          //                       profile[0].address,
+          //                       style: Util.txt(Palette.proTxt,
+          //                           14, FontWeight.w500),
+          //                     )),
+          //                   ],
+          //                 ),
+          //               ),
+          //             ],
+          //           ),
+          //         ),
+          //       )
+          //     : Container(),
+          //
+          SizedBox(
+              width: MediaQuery.of(context).size.width*0.7,
+              child: Image.asset(Images.logo)), // Update path as necessar
+          clickableCard(
+            child: ListTile(
+              splashColor: Palette.blue_tone_light_4.withOpacity(0.1),
+              leading:
+                  const Icon(MaterialCommunityIcons.truck_outline),
+              title: Text(
+                'My orders',
+                style: Util.txt(Palette.black, 14, FontWeight.w500),
+              ),
+              trailing: const Icon(Icons.navigate_next),
+              dense: true,
+              contentPadding:
+                  const EdgeInsets.fromLTRB(12, 0, 0, 0),
+              onTap: () {
+                if (log) {
+                  Util.showDog(
+                      context, 'Please Login to view MY orders');
+                } else {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              const MyOrdersList()));
+                }
+              },
+            ),
+          ),
+          clickableCard(
+            child: ListTile(
+              splashColor: Palette.blue_tone_light_4.withOpacity(0.1),
+              leading: const Icon(AntDesign.customerservice),
+              title: Text(
+                'Contact us',
+                style: Util.txt(Palette.black, 14, FontWeight.w500),
+              ),
+              trailing: Icon(showCont
+                  ? Icons.keyboard_arrow_down
+                  : Icons.navigate_next),
+              dense: true,
+              contentPadding:
+                  const EdgeInsets.fromLTRB(12, 0, 0, 0),
+              onTap: () {
+                if (contactUs.isNotEmpty) {
+                  setState(() {
+                    showCont ? showCont = false : showCont = true;
+                  });
+                }
+              },
+            ),
+          ),
+
+          if (showCont && contactUs.isNotEmpty) Container(
+                  // decoration: BoxDecoration(
+                  //     border: Border(
+                  //         top: BorderSide(color: Palette.orange),
+                  //         bottom:
+                  //             BorderSide(color: Palette.orange))),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
                     child: Column(
                       children: [
-                        profile.isNotEmpty
-                            ? Container(
-                                decoration: BoxDecoration(
-                                  color: Palette.color1,
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: Column(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.fromLTRB(
-                                            0, 0, 0, 10),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              profile[0].name.toUpperCase(),
-                                              style: Util.txt(Palette.proTxt,
-                                                  16, FontWeight.w500),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.fromLTRB(
-                                            0, 0, 0, 10),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              profile[0].email,
-                                              style: Util.txt(Palette.proTxt,
-                                                  14, FontWeight.w500),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.fromLTRB(
-                                            0, 0, 0, 10),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              profile[0].mobile,
-                                              style: Util.txt(Palette.proTxt,
-                                                  14, FontWeight.w500),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.fromLTRB(
-                                            0, 0, 0, 10),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Flexible(
-                                                child: Text(
-                                              profile[0].address,
-                                              style: Util.txt(Palette.proTxt,
-                                                  14, FontWeight.w500),
-                                            )),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              )
-                            : Container(),
-                        ListTile(
-                          leading:
-                              const Icon(MaterialCommunityIcons.truck_outline),
-                          title: Text(
-                            'My orders',
-                            style: Util.txt(Palette.black, 14, FontWeight.w500),
-                          ),
-                          trailing: const Icon(Icons.navigate_next),
-                          dense: true,
-                          contentPadding:
-                              const EdgeInsets.fromLTRB(12, 0, 0, 0),
-                          onTap: () {
-                            if (log) {
-                              Util.showDog(
-                                  context, 'Please Login to view MY orders');
-                            } else {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const MyOrdersList()));
-                            }
-                          },
-                        ),
-                        const Divider(
-                          height: 1,
-                        ),
-                        ListTile(
-                          leading: const Icon(AntDesign.customerservice),
-                          title: Text(
-                            'Contact us',
-                            style: Util.txt(Palette.black, 14, FontWeight.w500),
-                          ),
-                          trailing: Icon(showCont
-                              ? Icons.keyboard_arrow_down
-                              : Icons.navigate_next),
-                          dense: true,
-                          contentPadding:
-                              const EdgeInsets.fromLTRB(12, 0, 0, 0),
-                          onTap: () {
-                            if (contactUs.isNotEmpty) {
-                              setState(() {
-                                showCont ? showCont = false : showCont = true;
-                              });
-                            }
-                          },
-                        ),
-                        showCont && contactUs.isNotEmpty
-                            ? Container(
-                                decoration: BoxDecoration(
-                                    border: Border(
-                                        top: BorderSide(color: Palette.orange),
-                                        bottom:
-                                            BorderSide(color: Palette.orange))),
-                                child: Column(
-                                  children: [
-                                    ListTile(
-                                      // leading: Icon(Feather.user),
-                                      title: GestureDetector(
-                                          onTap: () {
-                                            if (contactUs[0].email != '') {
-                                              Util.launchEmail(
-                                                  contactUs[0].email,
-                                                  'WEMart Global');
-                                            }
-                                          },
-                                          child: Text(
-                                            contactUs[0].email,
-                                            style: Util.txt(Palette.proTxt, 14,
-                                                FontWeight.w500),
-                                          )),
-                                      dense: true,
-                                      contentPadding: const EdgeInsets.fromLTRB(
-                                          12, 0, 0, 0),
-                                    ),
-                                    ListTile(
-                                      // leading: Icon(Feather.user),
-                                      title: GestureDetector(
-                                          onTap: () {
-                                            if (contactUs[0].mobile != '') {
-                                              Util.phoneCall(
-                                                  contactUs[0].mobile);
-                                            }
-                                          },
-                                          child: Text(
-                                            contactUs[0].mobile,
-                                            style: Util.txt(Palette.proTxt, 14,
-                                                FontWeight.w500),
-                                          )),
-                                      dense: true,
-                                      contentPadding: const EdgeInsets.fromLTRB(
-                                          12, 0, 0, 0),
-                                    ),
-                                    // ListTile(
-                                    //   // leading: Icon(Feather.user),
-                                    //   title: Text(contactUs[0].address,style: Util.txt(Palette.proTxt, 14, FontWeight.w500),),
-                                    //   dense: true,
-                                    //   contentPadding: EdgeInsets.fromLTRB(12, 0, 0, 0),
-                                    // ),
-                                  ],
-                                ),
-                              )
-                            : Container(),
-                        const Divider(
-                          height: 1,
-                        ),
-                        ListTile(
-                          leading: const Icon(MaterialCommunityIcons.truck_outline),
-                          title: Text(
-                            'Shipping and Delivery',
-                            style: Util.txt(Palette.black, 14, FontWeight.w500),
-                          ),
-                          trailing: Icon(showCont1
-                              ? Icons.keyboard_arrow_down
-                              : Icons.navigate_next),
-                          dense: true,
-                          contentPadding:
-                              const EdgeInsets.fromLTRB(12, 0, 0, 0),
-                          onTap: () {
-                            Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const WebViewApp()));
-                          },
-                        ),
-                        const Divider(
-                          height: 1,
-                        ),
-                        ListTile(
-                          leading: const Icon(MaterialCommunityIcons.shield_account_outline),
-                          title: Text(
-                            'Privacy policy',
-                            style: Util.txt(Palette.black, 14, FontWeight.w500),
-                          ),
-                          trailing: Icon(showCont1
-                              ? Icons.keyboard_arrow_down
-                              : Icons.navigate_next),
-                          dense: true,
-                          contentPadding:
-                              const EdgeInsets.fromLTRB(12, 0, 0, 0),
-                          onTap: () {
-                            Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const PrivacyWebView()));
-                          },
-                        ),
-                        const Divider(
-                          height: 1,
-                        ),
-                        /*ListTile(
-                          leading: const Icon(AntDesign.customerservice),
-                          title: Text(
-                            'cancellation and refund',
-                            style: Util.txt(Palette.black, 14, FontWeight.w500),
-                          ),
-                          trailing: Icon(showCont2
-                              ? Icons.keyboard_arrow_down
-                              : Icons.navigate_next),
-                          dense: true,
-                          contentPadding:
-                              const EdgeInsets.fromLTRB(12, 0, 0, 0),
-                          onTap: () {
-                            if (contactUs.isNotEmpty) {
-                              setState(() {
-                                showCont2 ? showCont2 = false : showCont2 = true;
-                              });
-                            }
-                          },
-                        ),
-                        const Divider(
-                          height: 1,
-                        ),
-                        ListTile(
-                          leading: const Icon(AntDesign.customerservice),
-                          title: Text(
-                            'terms and conditions',
-                            style: Util.txt(Palette.black, 14, FontWeight.w500),
-                          ),
-                          trailing: Icon(showCont3
-                              ? Icons.keyboard_arrow_down
-                              : Icons.navigate_next),
-                          dense: true,
-                          contentPadding:
-                              const EdgeInsets.fromLTRB(12, 0, 0, 0),
-                          onTap: () {
-                            if (contactUs.isNotEmpty) {
-                              setState(() {
-                                showCont3 ? showCont3 = false : showCont3 = true;
-                              });
-                            }
-                          },
-                        ),
-                        const Divider(
-                          height: 1,
-                        ),
-                         ListTile(
-                          leading: const Icon(AntDesign.customerservice),
-                          title: Text(
-                            'privacy policy',
-                            style: Util.txt(Palette.black, 14, FontWeight.w500),
-                          ),
-                          trailing: Icon(showCont4
-                              ? Icons.keyboard_arrow_down
-                              : Icons.navigate_next),
-                          dense: true,
-                          contentPadding:
-                              const EdgeInsets.fromLTRB(12, 0, 0, 0),
-                          onTap: () {
-                            if (contactUs.isNotEmpty) {
-                              setState(() {
-                                showCont4 ? showCont4 = false : showCont4 = true;
-                              });
-                            }
-                          },
-                        ),
-                        const Divider(
-                          height: 1,
-                        ),*/
-                        ListTile(
-                          leading: Icon(Platform.isAndroid
-                              ? Ionicons.share_social_outline
-                              : Ionicons.share_outline),
-                          title: Text(
-                            'Share',
-                            style: Util.txt(Palette.black, 14, FontWeight.w500),
-                          ),
-                          // trailing: const Icon(Icons.navigate_next),
-                          dense: true,
-                          contentPadding:
-                              const EdgeInsets.fromLTRB(12, 0, 0, 0),
-                          onTap: () {
-                            if (shareApp != '') {
-                              Util.shareMsg(shareApp);
-                            }
-                          },
-                        ),
-                        const Divider(
-                          height: 1,
-                        ),
-                        log
-                            ? ListTile(
-                                leading: const Icon(Ionicons.log_in_outline),
-                                title: Text(
-                                  'Login',
-                                  style: Util.txt(
-                                      Palette.black, 14, FontWeight.w500),
-                                ),
-                                dense: true,
-                                contentPadding:
-                                    const EdgeInsets.fromLTRB(12, 0, 0, 0),
+                        clickableCard(
+                          isMenu: true,
+                          child: ListTile(
+                            splashColor: Palette.blue_tone_light_4.withOpacity(0.1),
+                            // leading: Icon(Feather.user),
+                            title: GestureDetector(
                                 onTap: () {
-                                  c.nav.value = 0;
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => const Login(
-                                                share: {'nav': 3},
-                                              )));
+                                  if (contactUs[0].email != '') {
+                                    Util.launchEmail(
+                                        contactUs[0].email,
+                                        'WEMart Global');
+                                  }
                                 },
-                              )
-                            : Column(
-                                children: [
-                                  ListTile(
-                                    leading:
-                                        const Icon(Ionicons.log_out_outline),
-                                    title: Text(
-                                      'Logout',
-                                      style: Util.txt(
-                                          Palette.black, 14, FontWeight.w500),
-                                    ),
-                                    onTap: logoutConfirm,
-                                    dense: true,
-                                    contentPadding:
-                                        const EdgeInsets.fromLTRB(12, 0, 0, 0),
-                                  ),
-                                  const Divider(
-                                    height: 1,
-                                  ),
-                                  ListTile(
-                                    leading: const Icon(MaterialCommunityIcons
-                                        .account_remove_outline),
-                                    title: Text(
-                                      'Delete Account',
-                                      style: Util.txt(
-                                          Palette.black, 14, FontWeight.w500),
-                                    ),
-                                    onTap: confirmMsg,
-                                    dense: true,
-                                    contentPadding:
-                                        const EdgeInsets.fromLTRB(12, 0, 0, 0),
-                                  ),
-                                ],
-                              ),
-                        // Divider(height: 1,),
+                                child: Text(
+                                  contactUs[0].email,
+                                  style: Util.txt(Palette.proTxt, 14,
+                                      FontWeight.w500),
+                                )),
+                            dense: true,
+                            contentPadding: const EdgeInsets.fromLTRB(
+                                12, 0, 0, 0),
+                          ),
+                        ),
+                        clickableCard(
+                          isMenu: true,
+                          child: ListTile(
+                            splashColor: Palette.blue_tone_light_4.withOpacity(0.1),
+                            // leading: Icon(Feather.user),
+                            title: GestureDetector(
+                                onTap: () {
+                                  if (contactUs[0].mobile != '') {
+                                    Util.phoneCall(
+                                        contactUs[0].mobile);
+                                  }
+                                },
+                                child: Text(
+                                  contactUs[0].mobile,
+                                  style: Util.txt(Palette.proTxt, 14,
+                                      FontWeight.w500),
+                                )),
+                            dense: true,
+                            contentPadding: const EdgeInsets.fromLTRB(
+                                12, 0, 0, 0),
+                          ),
+                        ),
+
+                        SizedBox(height: 30,)
+                        // ListTile(
+                        //   // leading: Icon(Feather.user),
+                        //   title: Text(contactUs[0].address,style: Util.txt(Palette.proTxt, 14, FontWeight.w500),),
+                        //   dense: true,
+                        //   contentPadding: EdgeInsets.fromLTRB(12, 0, 0, 0),
+                        // ),
                       ],
                     ),
                   ),
-                )
-              ],
+                ) else Container(),
+
+          clickableCard(
+            child: ListTile(
+              splashColor: Palette.blue_tone_light_4.withOpacity(0.1),
+              leading: const Icon(MaterialCommunityIcons.truck_outline),
+              title: Text(
+                'Shipping and Delivery',
+                style: Util.txt(Palette.black, 14, FontWeight.w500),
+              ),
+              trailing: Icon(showCont1
+                  ? Icons.keyboard_arrow_down
+                  : Icons.navigate_next),
+              dense: true,
+              contentPadding:
+                  const EdgeInsets.fromLTRB(12, 0, 0, 0),
+              onTap: () {
+                Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              const WebViewApp()));
+              },
             ),
           ),
-          // Row(mainAxisAlignment: MainAxisAlignment.center,
-          //   children: [
-          //     Badge(
-          //       position: BadgePosition(bottom: 6,start: 90),
-          //       badgeColor: Colors.white,
-          //       padding: EdgeInsets.all(0.0),
-          //       badgeContent: IconButton(icon: Icon(Icons.camera_alt,color: Palette.proBack,size: 20.0,), onPressed: (){
-          //         setState(() {
-          //           // getImage(ImageSource.gallery);
-          //         });
-          //       },
-          //         padding: EdgeInsets.all(0.0),),
-          //       child: _avatarImage(),
-          //     ),
-          //   ],
-          // ),
+          clickableCard(
+            child: ListTile(
+              splashColor: Palette.blue_tone_light_4.withOpacity(0.1),
+              leading: const Icon(MaterialCommunityIcons.shield_account_outline),
+              title: Text(
+                'Privacy policy',
+                style: Util.txt(Palette.black, 14, FontWeight.w500),
+              ),
+              trailing: Icon(showCont1
+                  ? Icons.keyboard_arrow_down
+                  : Icons.navigate_next),
+              dense: true,
+              contentPadding:
+                  const EdgeInsets.fromLTRB(12, 0, 0, 0),
+              onTap: () {
+                Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              const PrivacyWebView()));
+              },
+            ),
+          ),
+          /*ListTile(
+            leading: const Icon(AntDesign.customerservice),
+            title: Text(
+              'cancellation and refund',
+              style: Util.txt(Palette.black, 14, FontWeight.w500),
+            ),
+            trailing: Icon(showCont2
+                ? Icons.keyboard_arrow_down
+                : Icons.navigate_next),
+            dense: true,
+            contentPadding:
+                const EdgeInsets.fromLTRB(12, 0, 0, 0),
+            onTap: () {
+              if (contactUs.isNotEmpty) {
+                setState(() {
+                  showCont2 ? showCont2 = false : showCont2 = true;
+                });
+              }
+            },
+          ),
+          const Divider(
+            height: 1,
+          ),
+          ListTile(
+            leading: const Icon(AntDesign.customerservice),
+            title: Text(
+              'terms and conditions',
+              style: Util.txt(Palette.black, 14, FontWeight.w500),
+            ),
+            trailing: Icon(showCont3
+                ? Icons.keyboard_arrow_down
+                : Icons.navigate_next),
+            dense: true,
+            contentPadding:
+                const EdgeInsets.fromLTRB(12, 0, 0, 0),
+            onTap: () {
+              if (contactUs.isNotEmpty) {
+                setState(() {
+                  showCont3 ? showCont3 = false : showCont3 = true;
+                });
+              }
+            },
+          ),
+          const Divider(
+            height: 1,
+          ),
+           ListTile(
+            leading: const Icon(AntDesign.customerservice),
+            title: Text(
+              'privacy policy',
+              style: Util.txt(Palette.black, 14, FontWeight.w500),
+            ),
+            trailing: Icon(showCont4
+                ? Icons.keyboard_arrow_down
+                : Icons.navigate_next),
+            dense: true,
+            contentPadding:
+                const EdgeInsets.fromLTRB(12, 0, 0, 0),
+            onTap: () {
+              if (contactUs.isNotEmpty) {
+                setState(() {
+                  showCont4 ? showCont4 = false : showCont4 = true;
+                });
+              }
+            },
+          ),
+          const Divider(
+            height: 1,
+          ),*/
+          clickableCard(
+            child: ListTile(
+              splashColor: Palette.blue_tone_light_4.withOpacity(0.1),
+              leading: Icon(Platform.isAndroid
+                  ? Ionicons.share_social_outline
+                  : Ionicons.share_outline),
+              title: Text(
+                'Share',
+                style: Util.txt(Palette.black, 14, FontWeight.w500),
+              ),
+              // trailing: const Icon(Icons.navigate_next),
+              dense: true,
+              contentPadding:
+                  const EdgeInsets.fromLTRB(12, 0, 0, 0),
+              onTap: () {
+                if (shareApp != '') {
+                  Util.shareMsg(shareApp);
+                }
+              },
+            ),
+          ),
+          
+          if (log) clickableCard(
+            cardColor: Palette.blue_tone_light_5.withBlue(100).withOpacity(0.2),
+            child: ListTile(
+              splashColor: Palette.blue_tone_light_4.withOpacity(0.1),
+                    leading: Icon(Ionicons.log_in_outline, color: Palette.white,),
+                    title: Text(
+                      'Login',
+                      style: Util.txt(
+                          Palette.white, 14, FontWeight.w500),
+                    ),
+                    dense: true,
+                    contentPadding:
+                        const EdgeInsets.fromLTRB(12, 0, 0, 0),
+                    onTap: () {
+                      c.nav.value = 0;
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const Login(
+                                    share: {'nav': 3},
+                                  )));
+                    },
+                  ),
+          ) else Column(
+                  children: [
+                    clickableCard(
+                      cardColor: Palette.blue_tone_light_4.withOpacity(0.3),
+                      child: ListTile(
+                        splashColor: Palette.blue_tone_light_4.withOpacity(0.1),
+                        leading:
+                            const Icon(Ionicons.log_out_outline, color: Colors.white,),
+                        title: Text(
+                          'Logout',
+                          style: Util.txt(
+                              Palette.white, 14, FontWeight.w500),
+                        ),
+                        onTap: logoutConfirm,
+                        dense: true,
+                        contentPadding:
+                            const EdgeInsets.fromLTRB(12, 0, 0, 0),
+                      ),
+                    ),
+                    clickableCard(
+                      cardColor: Palette.blue_tone_light_5.withOpacity(0.5),
+                      child: ListTile(
+                        splashColor: Palette.blue_tone_light_4.withOpacity(0.1),
+                        leading: const Icon(MaterialCommunityIcons
+                            .account_remove_outline, color: Colors.white,),
+                        title: Text(
+                          'Delete Account',
+                          style: Util.txt(
+                              Palette.white, 14, FontWeight.w500),
+                        ),
+                        onTap: confirmMsg,
+                        dense: true,
+                        contentPadding:
+                            const EdgeInsets.fromLTRB(12, 0, 0, 0),
+                      ),
+                    ),
+                  ],
+                ),
+          SizedBox(height: 35,)
+          // Divider(height: 1,),
         ],
       ),
     );
@@ -653,6 +638,18 @@ class _ProfileState extends State<Profile> {
                 ],
               ));
     }
+  }
+  
+  Widget clickableCard({required child, Color cardColor=Colors.white, bool isMenu=false}){
+    return Padding(
+      padding: isMenu? EdgeInsets.symmetric(horizontal: 28, vertical: 8) : EdgeInsets.all(8.0),
+      child: Card(
+          color: cardColor,
+          elevation: 15,
+          shadowColor: Palette.blue_tone_light_4,
+          child: child
+      ),
+    );
   }
 
   confirmMsg() {

@@ -17,6 +17,7 @@ import 'AppManagement.dart';
 class Util {
   static String baseurl = 'https://redbag.vensframe.com/app/';
   static String clientName = 'HIPRO'; //REDB
+  static double bottomNavBarHeight = 70;
   //--------------------------- text font family-----------------------------------------
   static txt(Color tc, double fs, FontWeight fw) {
     return GoogleFonts.notoSans(
@@ -280,6 +281,7 @@ class Util {
       }
     }
   }
+
   static shareMsg(String msg) {
     Share.share(msg);
   }

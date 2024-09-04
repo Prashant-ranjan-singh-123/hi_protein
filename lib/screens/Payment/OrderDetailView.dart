@@ -13,6 +13,7 @@ import '../../Model/orderdetails.dart';
 import '../../utilities/constants.dart';
 import '../../utilities/palette.dart';
 import '../Home/bottom_nav_4th_item_cart/CartList.dart';
+import '../Home/bottom_nav_bar.dart';
 import 'OrderList.dart';
 
 class OrderDetailView extends StatefulWidget {
@@ -553,7 +554,7 @@ class _OrderDetailViewState extends State<OrderDetailView> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const CartList(), // Navigate to CartList
+                      builder: (context) => NavigationItemBar(state: 3),
                     ),
                   );
                 },

@@ -63,7 +63,7 @@ class _MyOrdersListState extends State<MyOrdersList> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => const Profile()));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => NavigationItemBar(state: 4)));
         return true;
       },
       child: Scaffold(
@@ -75,7 +75,7 @@ class _MyOrdersListState extends State<MyOrdersList> {
           leading: IconButton(
             onPressed: () {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const Profile()));
+                  MaterialPageRoute(builder: (context) => NavigationItemBar(state: 4)));
             },
             icon: Icon(
               Ionicons.arrow_back,
@@ -88,13 +88,13 @@ class _MyOrdersListState extends State<MyOrdersList> {
           ),
         ),
         body: SafeArea(child: checkConnection()),
-        bottomSheet: Container(
-          color: Palette.white,
-          height: 50,
-          child: const NavigationItemBar(
-            state: 5,
-          ),
-        ),
+        // bottomSheet: Container(
+        //   // color: Palette.white,
+        //   height: Util.bottomNavBarHeight,
+        //   child: const NavigationItemBar(
+        //     state: 5,
+        //   ),
+        // ),
       ),
     );
   }
@@ -324,7 +324,7 @@ class _MyOrdersListState extends State<MyOrdersList> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const CartList(), // Navigate to CartList
+                    builder: (context) => NavigationItemBar(state: 3),
                   ),
                 );
               },

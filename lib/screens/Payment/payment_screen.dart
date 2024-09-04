@@ -499,6 +499,7 @@ import 'package:http/http.dart' as http;
 import '../../utilities/constants.dart';
 import '../../utilities/palette.dart';
 import '../Home/bottom_nav_4th_item_cart/CartList.dart';
+import '../Home/bottom_nav_bar.dart';
 import 'OrderList.dart';
 
 bool isTesting = false;
@@ -770,7 +771,7 @@ class PaymentScreenState extends State<PaymentScreen> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const CartList()));
+                          builder: (context) => NavigationItemBar(state: 3)));
                 }),
           ],
         );

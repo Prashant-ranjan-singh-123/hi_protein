@@ -55,11 +55,11 @@ class _MyMapState extends State<MyMap> {
         ],
       ),
       body:_child,
-      bottomSheet: Container(
-              color: Palette.white,
-              height: 100,
-              child: _changeLocation(),
-            ),
+      // bottomSheet: Container(
+      //         color: Palette.white,
+      //         height: 100,
+      //         child: _changeLocation(),
+      //       ),
     );
   }
   Future<void> getLocation()async{

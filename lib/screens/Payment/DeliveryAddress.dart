@@ -1,12 +1,14 @@
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:get/get.dart';
 import 'package:hi_protein/screens/Payment/payment_details.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:razorpay_flutter/razorpay_flutter.dart';
+import 'package:slide_to_act/slide_to_act.dart';
 import '../../Connectivity/No_internet.dart';
 import '../../Connectivity/connectivity_provider.dart';
 import '../../Model/Product_Model.dart';
@@ -15,6 +17,7 @@ import '../../utilities/constants.dart';
 import '../../utilities/google_search_places.dart';
 import '../../utilities/palette.dart';
 import '../Home/bottom_nav_4th_item_cart/CartList.dart';
+import '../Home/bottom_nav_bar.dart';
 import 'AddressForm.dart';
 import 'OrderList.dart';
 
@@ -23,13 +26,18 @@ class DeliveryAddress extends StatefulWidget {
   @override
   _DeliveryAddressState createState() => _DeliveryAddressState();
 }
+
 class _DeliveryAddressState extends State<DeliveryAddress> {
   final GlobalKey<ScaffoldState> _scafoldkey = GlobalKey<ScaffoldState>();
   List<AddressModel> adresList = [];
   List<bool> selLoc = [];
   List<ContactUsModel> contactUs = [];
   List<PaymentModel> payKeys = [];
-  String paymentStatus = '', sentId = '', orderID = '', weight = '0.5',tidvalue = '';
+  String paymentStatus = '',
+      sentId = '',
+      orderID = '',
+      weight = '0.5',
+      tidvalue = '';
   final Razorpay _razorpay = Razorpay();
   final Controller c = Get.put(Controller());
   bool loader = true;
@@ -43,6 +51,7 @@ class _DeliveryAddressState extends State<DeliveryAddress> {
     _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
     _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);*/
   }
+
   getData() async {
     c.delAddress.value = '';
     adresList = [];
@@ -51,7 +60,8 @@ class _DeliveryAddressState extends State<DeliveryAddress> {
     contactUs = [];
     String userid = await Util.getStringValuesSF('userid');
     try {
-      final productList = http.MultipartRequest('POST', Uri.parse('${Util.baseurl}addresslist.php'));
+      final productList = http.MultipartRequest(
+          'POST', Uri.parse('${Util.baseurl}addresslist.php'));
       productList.fields['userid'] = userid;
       productList.fields['client'] = Util.clientName;
       final snd = await productList.send();
@@ -98,12 +108,15 @@ class _DeliveryAddressState extends State<DeliveryAddress> {
       });
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => const CartList()));
+            context,
+            MaterialPageRoute(
+                builder: (context) => NavigationItemBar(state: 3)));
         return true;
       },
       child: Scaffold(
@@ -114,8 +127,10 @@ class _DeliveryAddressState extends State<DeliveryAddress> {
           elevation: 0,
           leading: IconButton(
             onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const CartList()));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => NavigationItemBar(state: 3)));
             },
             icon: Icon(
               Ionicons.arrow_back,
@@ -128,6 +143,9 @@ class _DeliveryAddressState extends State<DeliveryAddress> {
           ),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+        // bottomSheet: adresList.isNotEmpty
+        //     ? _deliver_to_this_address()
+        //     : const SizedBox(),
         floatingActionButton: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
@@ -143,10 +161,11 @@ class _DeliveryAddressState extends State<DeliveryAddress> {
                         child: InkWell(
                           onTap: () {
                             if (c.delAddress.value == '') {
-                              Util.customDialog('Info','Please Select Delivery Address', context);
+                              Util.customDialog('Info',
+                                  'Please Select Delivery Address', context);
                             } else {
                               checkShipment();
-                              //createRequest();
+                              // createRequest();
                             }
                           },
                           child: Card(
@@ -161,17 +180,19 @@ class _DeliveryAddressState extends State<DeliveryAddress> {
                           ),
                         ),
                       )
+                    // SizedBox()
                     : Container(),
                 FloatingActionButton.small(
                   onPressed: () {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const MapSearchPlaces(), //MyMap()
-                                  //type: 'add',
-                                  //state: 0,
-                                  //address: const [],
-                                ));
+                          builder: (context) =>
+                              const MapSearchPlaces(), //MyMap()
+                          //type: 'add',
+                          //state: 0,
+                          //address: const [],
+                        ));
                   },
                   backgroundColor: Palette.white,
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -198,6 +219,7 @@ class _DeliveryAddressState extends State<DeliveryAddress> {
       },
     );
   }
+
   page() {
     return adresList.isNotEmpty
         ? Padding(
@@ -207,176 +229,14 @@ class _DeliveryAddressState extends State<DeliveryAddress> {
                 for (int i = 0; i < adresList.length; i++)
                   Column(
                     children: [
-                      Container(
-                        color: Palette.white,
-                        child: IntrinsicHeight(
-                          child: Padding(
-                            padding: const EdgeInsets.all(2.0),
-                            child: Row(
-                              children: [
-                                Checkbox(
-                                  value: selLoc[i],
-                                  onChanged: (v) {
-                                    manage(i);
-                                  },
-                                  materialTapTargetSize:MaterialTapTargetSize.shrinkWrap,
-                                ),
-                                const VerticalDivider(),
-                                Expanded(
-                                  child: Column(
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Flexible(
-                                              child: Text(
-                                            '${adresList[i].fn} ${adresList[i].ln}',
-                                            style: Util.txt(Palette.black, 14,
-                                                FontWeight.w400),
-                                          )),
-                                        ],
-                                      ),
-                                      const SizedBox(
-                                        height: 2,
-                                      ),
-                                      Row(
-                                        children: [
-                                          Flexible(
-                                              child: Text(
-                                            adresList[i].address,
-                                            style: Util.txt(Palette.black, 14,
-                                                FontWeight.w400),
-                                          )),
-                                        ],
-                                      ),
-                                      const SizedBox(
-                                        height: 2,
-                                      ),
-                                      Row(
-                                        children: [
-                                          Flexible(
-                                              child: Text(
-                                            adresList[i].city,
-                                            style: Util.txt(Palette.black, 14,
-                                                FontWeight.w400),
-                                          )),
-                                        ],
-                                      ),
-                                      const SizedBox(
-                                        height: 2,
-                                      ),
-                                      Row(
-                                        children: [
-                                          Flexible(
-                                              child: Text(
-                                            adresList[i].state,
-                                            style: Util.txt(Palette.black, 14,
-                                                FontWeight.w400),
-                                          )),
-                                        ],
-                                      ),
-                                      const SizedBox(
-                                        height: 2,
-                                      ),
-                                      Row(
-                                        children: [
-                                          Flexible(
-                                              child: Text(
-                                            adresList[i].pincode,
-                                            style: Util.txt(Palette.black, 14,
-                                                FontWeight.w400),
-                                          )),
-                                        ],
-                                      ),
-                                      const SizedBox(
-                                        height: 2,
-                                      ),
-                                      Row(
-                                        children: [
-                                          Flexible(
-                                              child: Text(
-                                            adresList[i].country,
-                                            style: Util.txt(Palette.black, 14,
-                                                FontWeight.w400),
-                                          )),
-                                        ],
-                                      ),
-                                      const SizedBox(
-                                        height: 2,
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Icon(
-                                                Ionicons.call_outline,
-                                                color: Palette.gray,
-                                              ),
-                                              Text(
-                                                adresList[i].mobile,
-                                                style: Util.txt(Palette.black,
-                                                    12, FontWeight.w400),
-                                              ),
-                                            ],
-                                          ),
-                                          Row(
-                                            children: [
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.fromLTRB(
-                                                        0, 0, 16, 0),
-                                                child: InkWell(
-                                                    onTap: () {
-                                                      Navigator.push(
-                                                          context,
-                                                          MaterialPageRoute(
-                                                              builder: (context) =>
-                                                                  AddressForm(
-                                                                      type:
-                                                                          'edit',
-                                                                      state: i,
-                                                                      address:
-                                                                          adresList)));
-                                                    },
-                                                    child: const Icon(
-                                                      Feather.edit,
-                                                      color: Colors.blue,
-                                                      size: 20,
-                                                    )),
-                                              ),
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.fromLTRB(
-                                                        0, 0, 10, 0),
-                                                child: InkWell(
-                                                    onTap: () => confirmation(
-                                                        adresList[i].id),
-                                                    child: const Icon(
-                                                      Feather.trash_2,
-                                                      color: Colors.red,
-                                                      size: 20,
-                                                    )),
-                                              ),
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
+                      _address_display(i: i),
                       const SizedBox(
-                        height: 10,
-                      ),
+                        height: 20,
+                      )
                     ],
                   ),
                 const SizedBox(
-                  height: 50,
+                  height: 90,
                 ),
               ],
             ),
@@ -392,7 +252,138 @@ class _DeliveryAddressState extends State<DeliveryAddress> {
               ));
   }
 
-  navToPay(Map<String, dynamic> sh,Map<String, dynamic> shipper) {
+  Widget _address_display({required int i}) {
+    Widget _title_body({required String title, required String body}) {
+      return Column(
+        children: [
+          Card(
+            color: Colors.transparent,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Text(
+                    title,
+                    style:
+                        Util.txt(Palette.blue_tone_white, 16, FontWeight.w400),
+                  ),
+                  const Spacer(),
+                  Flexible(
+                    child: Text(
+                      body,
+                      style: Util.txt(
+                          Palette.blue_tone_white, 16, FontWeight.w700),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(
+            height: 2,
+          ),
+        ],
+      );
+    }
+
+    Widget _button() {
+      return Row(
+        children: [
+          const SizedBox(
+            width: 10,
+          ),
+          Expanded(
+              child: ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => AddressForm(
+                          type: 'edit', state: i, address: adresList)));
+            },
+            style: ElevatedButton.styleFrom(
+                elevation: 20,
+                shape: RoundedRectangleBorder(
+                  borderRadius:
+                      BorderRadius.circular(12), // Adjust radius as needed
+                ),
+                backgroundColor: Palette.blue_tone_green),
+            child: const Text(
+              'Edit',
+              style: TextStyle(color: Colors.white),
+            ),
+          )),
+          const SizedBox(
+            width: 10,
+          ),
+          Expanded(
+              child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      elevation: 20,
+                      shadowColor: Colors.red.withOpacity(0.9),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(
+                            12), // Adjust radius as needed
+                      ),
+                      backgroundColor: Colors.red.withOpacity(0.9)),
+                  onPressed: () {
+                    confirmation(adresList[i].id);
+                  },
+                  child: Text(
+                    'Delete',
+                    style: TextStyle(color: Palette.blue_tone_white),
+                  ))),
+          const SizedBox(
+            width: 10,
+          ),
+        ],
+      );
+    }
+
+    return Card(
+      color: Palette.blue_tone_light_4.withOpacity(0.7),
+      elevation: 20,
+      shadowColor: Palette.blue_tone_light_4.withOpacity(0.4),
+      child: IntrinsicHeight(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: [
+              Checkbox(
+                value: selLoc[i],
+                onChanged: (v) {
+                  manage(i);
+                },
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+              const VerticalDivider(),
+              Expanded(
+                child: Column(
+                  children: [
+                    _title_body(
+                        title: 'Name: ',
+                        body: '${adresList[i].fn} ${adresList[i].ln}'),
+                    _title_body(title: 'Address', body: adresList[i].address),
+                    _title_body(title: 'City', body: adresList[i].city),
+                    _title_body(title: 'State', body: adresList[i].state),
+                    _title_body(title: 'Pin Code', body: adresList[i].pincode),
+                    _title_body(title: 'Country', body: adresList[i].country),
+                    _title_body(title: 'Number', body: adresList[i].mobile),
+                    _button(),
+                    const SizedBox(
+                      height: 2,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  navToPay(Map<String, dynamic> sh, Map<String, dynamic> shipper) {
     Navigator.push(
         context,
         MaterialPageRoute(
@@ -404,7 +395,7 @@ class _DeliveryAddressState extends State<DeliveryAddress> {
                 )));
   }
 
-  manage(int a){
+  manage(int a) {
     c.delAddress.value = adresList[a].address;
     c.delMobile.value = adresList[a].mobile;
     c.latitude.value = adresList[a].latitude;
@@ -413,7 +404,7 @@ class _DeliveryAddressState extends State<DeliveryAddress> {
     c.isstate.value = adresList[a].state;
     c.ispincode.value = adresList[a].pincode;
     c.isfirstname.value = adresList[a].fn;
-    
+
     ins = a;
     setState(() {
       for (int b = 0; b < selLoc.length; b++) {
@@ -425,12 +416,13 @@ class _DeliveryAddressState extends State<DeliveryAddress> {
       }
     });
   }
+
   checkShipment() async {
     Util.showProgress(context);
-   // String latvalue = await Util.getStringValuesSF('latvalue');
-   // String longvalue = await Util.getStringValuesSF('longvalue');
-    final shipCheck = http.MultipartRequest('POST', 
-    Uri.parse('${Util.baseurl}shipping/dunzo/quote.php'));
+    // String latvalue = await Util.getStringValuesSF('latvalue');
+    // String longvalue = await Util.getStringValuesSF('longvalue');
+    final shipCheck = http.MultipartRequest(
+        'POST', Uri.parse('${Util.baseurl}shipping/dunzo/quote.php'));
     Util.logDebug('ship api: $shipCheck');
     shipCheck.fields['droplat'] = c.latitude.value;
     shipCheck.fields['droplng'] = c.longitude.value;
@@ -438,12 +430,12 @@ class _DeliveryAddressState extends State<DeliveryAddress> {
     var response = await http.Response.fromStream(res);
     Util.logDebug('deliver response: $response');
     try {
-      if (response.statusCode == 200){
+      if (response.statusCode == 200) {
         Util.dismissDialog(_scafoldkey.currentContext!);
         var dec = jsonDecode(response.body);
         Util.logDebug('deliver response1: $dec');
         if (dec['success'] == true) {
-          navToPay(dec,dec);
+          navToPay(dec, dec);
         } else {
           Util.showDog(_scafoldkey.currentContext!, dec['message']);
         }
@@ -456,7 +448,7 @@ class _DeliveryAddressState extends State<DeliveryAddress> {
     }
   }
 
-  confirmation(String id){
+  confirmation(String id) {
     showDialog(
       context: context,
       barrierDismissible: true, // Allows dismissing by tapping outside
@@ -731,6 +723,82 @@ class _DeliveryAddressState extends State<DeliveryAddress> {
           body: jsonEncode(map));
       if (respo.statusCode == 200) {}
     }
+  }
+
+  Widget _deliver_to_this_address() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 15),
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width,
+        height: 140,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            slide_action(), // Your action widget
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget slide_action() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Column(
+        children: [
+          SizedBox(
+            width: MediaQuery.of(context).size.width,
+            height: 60,
+            child: ElevatedButton(
+                onPressed: () {},
+                child: Text(
+                  'Add Address',
+                  style: TextStyle(color: Palette.blue_tone_white),
+                ),
+                style: ElevatedButton.styleFrom(
+                    elevation: 20,
+                    shape: RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.circular(12), // Adjust radius as needed
+                    ),
+                    backgroundColor: Palette.blue_tone_green)),
+          ),
+          SizedBox(height: 20,),
+          SlideAction(
+            innerColor: Palette.blue_tone_white,
+            elevation: 0,
+            height: 60,
+            sliderButtonIconPadding: 12,
+            borderRadius: 70,
+            sliderButtonIcon: const Icon(IconlyLight.wallet),
+            // outerColor: Palette.blue_tone_black,
+            outerColor: Palette.blue_tone_green.withGreen(80),
+            textColor: Palette.blue_tone_white,
+            text: 'Swipe To Pay',
+            textStyle: TextStyle(
+                color: Palette.blue_tone_white,
+                fontWeight: FontWeight.w700,
+                fontFamily: 'Poppins',
+                fontSize: 20),
+            // borderRadius: 55,
+            onSubmit: () async {
+              // await availibilityCheck();
+              // available = await Util.getStringValuesSF('availability');
+              // print('Available: ${available}');
+              // if(available.toString() == '1' && outofstockcount == '0'){
+              //   print('COndition 1');
+              //   // ignore: use_build_context_synchronously
+              //   Navigator.push(context, MaterialPageRoute(builder: (context)=>const DeliveryAddress()));
+              // }
+              // else{
+              //   print('COndition 2');
+              //   available.toString() != '1'?showResponseAlert('sorry, we are not accepting orders at this moment'): showResponseAlert('sorry, remove out of stock item');
+              // }
+            },
+          ),
+        ],
+      ),
+    );
   }
 
   @override

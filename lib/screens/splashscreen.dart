@@ -196,6 +196,7 @@ import '../utilities/constants.dart';
 import '../utilities/images.dart';
 import '../utilities/palette.dart';
 import 'Home/HomeScreen.dart';
+import 'Home/bottom_nav_bar.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -365,7 +366,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void nav() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const HomeScreen()),
+      MaterialPageRoute(builder: (context) => NavigationItemBar(state: 0,)),
     );
   }
 

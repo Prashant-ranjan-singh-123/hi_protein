@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:hi_protein/utilities/palette.dart';
 
 class WebViewApp extends StatefulWidget {
   const WebViewApp({super.key});
@@ -12,7 +14,10 @@ class _WebViewAppState extends State<WebViewApp> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Razorpay'),
+        title: Text('Razorpay', style: TextStyle(color: Palette.black),),
+        leading: IconButton(onPressed: (){
+          Navigator.of(context).pop();
+        }, icon: Icon(IconlyLight.arrowLeft, color: Palette.black,)),
       ),
       body: Center(child: InAppWebView(
   initialUrlRequest: URLRequest(

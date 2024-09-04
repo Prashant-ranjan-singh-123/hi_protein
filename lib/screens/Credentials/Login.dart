@@ -19,6 +19,7 @@ import '../Home/bottom_nav_1st_item_home/home_detailed_view.dart';
 import '../Home/bottom_nav_2nd_item_category/CategoryListDetailedPage.dart';
 import '../Home/bottom_nav_5th_item_profile/Profile.dart';
 import '../Home/bottom_nav_3rd_item_search/Search.dart';
+import '../Home/bottom_nav_bar.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key, required this.share}) : super(key: key);
@@ -505,7 +506,7 @@ class _LoginState extends State<Login> {
           context,
           MaterialPageRoute(
               builder: (context) => Search(
-                    share: {'state': 1, 'search': widget.share['search']},
+                    share: {'state': 1, 'search': widget.share['search']}, initialDish: '',
                   )));
     } else if (widget.share['nav'] == 2) {
       Navigator.push(
@@ -517,7 +518,7 @@ class _LoginState extends State<Login> {
                   state: widget.share['state'])));
     } else if (widget.share['nav'] == 3) {
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => const Profile()));
+          context, MaterialPageRoute(builder: (context) => NavigationItemBar(state: 4)));
     }
   }
 

@@ -55,17 +55,18 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Container(
         color: Palette.white,
         child: Padding(
-          padding: EdgeInsets.fromLTRB(0, 0, 0, Platform.isAndroid ? 0 : 20),
+          // padding: EdgeInsets.fromLTRB(0, 0, 0, Platform.isAndroid ? 0 : 20),
+          padding: EdgeInsets.all(0),
           child: Scaffold(
             backgroundColor: Palette.background,
             body: SafeArea(child: checkConnection()),
-            bottomSheet: Container(
-              color: Palette.white,
-              height: 50,
-              child: const NavigationItemBar(
-                state: 0,
-              ),
-            ),
+            // bottomSheet: Container(
+            //   // color: Palette.blue_tone_light_3,
+            //   height: Util.bottomNavBarHeight,
+            //   child: const NavigationItemBar(
+            //     state: 0,
+            //   ),
+            // ),
           ),
         ),
       ),

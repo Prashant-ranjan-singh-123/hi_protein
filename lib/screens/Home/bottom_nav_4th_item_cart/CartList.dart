@@ -4,8 +4,11 @@ import 'package:fancy_shimmer_image/fancy_shimmer_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_iconly/flutter_iconly.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import '../../../Connectivity/No_internet.dart';
@@ -72,11 +75,12 @@ class _CartListState extends State<CartList> {
                 int book = dec['data'][i]['count'];
                 totalAmount = totalAmount + (junk * book).roundToDouble();
               }
-              if(dec['data'][i]['stock'] == 'not available'){
-                  countnotAvailableprodList.add(dec['data'][i]['stock']);
+              if (dec['data'][i]['stock'] == 'not available') {
+                countnotAvailableprodList.add(dec['data'][i]['stock']);
               }
-              Util.addStringToSF('outofstockvalue','${countnotAvailableprodList.length}','');
-              //String outofstock = await Util.getStringValuesSF('outofstockvalue');  
+              Util.addStringToSF(
+                  'outofstockvalue', '${countnotAvailableprodList.length}', '');
+              //String outofstock = await Util.getStringValuesSF('outofstockvalue');
             }
             c.totalAmount.value = totalAmount;
             c.charges.value = double.parse(dec['shippingcharges']);
@@ -94,6 +98,7 @@ class _CartListState extends State<CartList> {
       });
     }
   }
+
   Future<bool> _onWillPop() async {
     return (await showDialog(
           context: context,
@@ -127,27 +132,17 @@ class _CartListState extends State<CartList> {
       child: Container(
         color: Palette.white,
         child: Padding(
-          padding: EdgeInsets.fromLTRB(0, 0, 0, Platform.isAndroid ? 0 : 20),
+          padding: EdgeInsets.all(0),
           child: Scaffold(
             backgroundColor: Palette.background,
-            // appBar: AppBar(
-            //   backgroundColor: Palette.white,
-            //   title: Text(widget.name,style: Util.txt(Palette.black, 16, FontWeight.w600),),
-            //   leading: IconButton(onPressed: nav, icon: Icon(Platform.isAndroid?Icons.arrow_back:Icons.arrow_back_ios,color: Palette.black,)),
-            // ),
             body: SafeArea(child: checkConnection()),
-            bottomSheet: Container(
-              color: Palette.white,
-              height: 50,
-              child: const NavigationItemBar(
-                state: 3,
-              ),
-            ),
+            bottomSheet: prodList.isNotEmpty? CartBilling():null,
           ),
         ),
       ),
     );
   }
+
   Widget checkConnection() {
     return Consumer<ConnectivityProvider>(
       builder: (consumerContext, model, child) {
@@ -155,374 +150,713 @@ class _CartListState extends State<CartList> {
       },
     );
   }
+
   page() {
     return prodList.isNotEmpty
-        ? ListView(
-            children: [
-              const Padding(
-                padding: EdgeInsets.fromLTRB(2, 2, 2, 4),
-                child: CartBilling(),
-              ),
-              for (int i = 0; i < prodList.length; i++)
-                Column(
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
-                      child: Row(
-                        children: <Widget>[
-                          SizedBox(
-                            height: 160.0,
-                            width: 150.0,
-                            child: ClipRRect(
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(10.0)),
-                              child: FancyShimmerImage(
-                                height: 160,
-                                width: 150,
-                                imageUrl: prodList[i].image,
-                                shimmerBaseColor: Colors.grey[300],
-                                shimmerHighlightColor: Colors.grey[100],
-                                errorWidget: Image.network(
-                                    'https://i0.wp.com/www.dobitaobyte.com.br/wp-content/uploads/2016/02/no_image.png?ssl=1'),
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                              child: SizedBox(
-                            height: 160,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Row(
-                                  children: <Widget>[
-                                    Flexible(
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(5.0),
-                                        child: Text(prodList[i].name,
-                                            style: Util.txt(Palette.black, 16,
-                                                FontWeight.w500),
-                                            softWrap: true),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(5, 0, 0, 0),
-                                  child: Row(
-                                    children: <Widget>[
-                                      Text(
-                                        '\u20B9 ',
-                                        style: Util.txt(
-                                            Colors.red, 16, FontWeight.w500),
-                                      ),
-                                      Text(
-                                        prodList[i].price,
-                                        style: Util.txt(
-                                            Palette.black, 14, FontWeight.w500),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                prodList[i].stock == 'not available'
-                                    ? Row(
-                                        mainAxisAlignment:MainAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            'Out of Stock',
-                                            style: Util.txt(Colors.red, 18,
-                                                FontWeight.w500),
-                                            softWrap: true,
-                                            textAlign: TextAlign.justify,
-                                          ),
-                                        ],
-                                      )
-                                    : SizedBox(
-                                        height: 40,
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.end,
-                                          children: <Widget>[
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.end,
-                                              children: <Widget>[
-                                                Visibility(
-                                                  visible:
-                                                      prodList[i].count == 0
-                                                          ? true
-                                                          : false,
-                                                  child: Padding(
-                                                    padding: const EdgeInsets
-                                                        .fromLTRB(0, 0, 0, 5),
-                                                    child: Row(
-                                                      children: <Widget>[
-                                                        SizedBox(
-                                                          width: 60,
-                                                          height: 30,
-                                                          child: OutlinedButton(
-                                                            onPressed: () {
-                                                              onlineCart(
-                                                                  prodList[i]
-                                                                      .uuid,
-                                                                  i,
-                                                                  1);
-                                                            },
-                                                            style: ButtonStyle(
-                                                                side: MaterialStateProperty.all(
-                                                                    BorderSide(
-                                                                        color: Palette
-                                                                            .black,
-                                                                        width:
-                                                                            1.2)),
-                                                                tapTargetSize:
-                                                                    MaterialTapTargetSize
-                                                                        .shrinkWrap,
-                                                                padding: MaterialStateProperty
-                                                                    .all(EdgeInsets
-                                                                        .zero),
-                                                                shape: MaterialStateProperty.all(
-                                                                    const RoundedRectangleBorder(
-                                                                        borderRadius:
-                                                                            BorderRadius.all(Radius.circular(10.0))))),
-                                                            child: Text('ADD',
-                                                                style: Util.txt(
-                                                                    Palette
-                                                                        .black,
-                                                                    16,
-                                                                    FontWeight
-                                                                        .w500)),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                                Visibility(
-                                                  visible:
-                                                      prodList[i].count == 0
-                                                          ? false
-                                                          : true,
-                                                  child: Row(
-                                                    children: <Widget>[
-                                                      SizedBox(
-                                                        width: 30, height: 30,
-                                                        // decoration: BoxDecoration(
-                                                        //   borderRadius: BorderRadius.circular(10.0),
-                                                        //   border: Border.all(color: Palette.black,width: 2.0),
-                                                        // ),
-                                                        child: OutlinedButton(
-                                                          onPressed: () {
-                                                            setState(() {
-                                                              int sky = prodList[
-                                                                          i]
-                                                                      .count -
-                                                                  1;
-                                                              if (sky >= 1) {
-                                                                onlineCart(
-                                                                    prodList[i]
-                                                                        .uuid,
-                                                                    i,
-                                                                    sky);
-                                                              }
-                                                              if (sky == 0) {
-                                                                onlineCart(
-                                                                    prodList[i]
-                                                                        .uuid,
-                                                                    i,
-                                                                    0);
-                                                              }
-                                                            });
-                                                          }, //
-                                                          style: ButtonStyle(
-                                                              padding: MaterialStateProperty.all(
-                                                                  const EdgeInsets
-                                                                          .symmetric(
-                                                                      horizontal:
-                                                                          0.0)),
-                                                              side: MaterialStateProperty
-                                                                  .all(BorderSide(
-                                                                      color: Palette
-                                                                          .black,
-                                                                      width:
-                                                                          1.2)),
-                                                              shape: MaterialStateProperty.all(
-                                                                  const RoundedRectangleBorder(
-                                                                      borderRadius:
-                                                                          BorderRadius.all(Radius.circular(10.0))))),
-                                                          child: prodList[i]
-                                                                      .count ==
-                                                                  1
-                                                              ? Icon(
-                                                                  Icons
-                                                                      .delete_outline,
-                                                                  color: Palette
-                                                                      .black)
-                                                              : Icon(
-                                                                  Icons.remove,
-                                                                  color: Palette
-                                                                      .black,
-                                                                ),
-                                                        ),
-                                                      ),
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(5.0),
-                                                        child: Container(
-                                                          height: 30,
-                                                          width: 50,
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        10.0),
-                                                            border: Border.all(
-                                                                color: Palette
-                                                                    .black,
-                                                                width: 1.2),
-                                                          ),
-                                                          child: Center(
-                                                              child: Text(
-                                                            prodList[i]
-                                                                .count
-                                                                .toString(),
-                                                            textAlign: TextAlign
-                                                                .center,
-                                                          )),
-                                                        ),
-                                                      ),
-                                                      SizedBox(
-                                                        width: 30,
-                                                        height: 30,
-                                                        // decoration: BoxDecoration(
-                                                        //   borderRadius: BorderRadius.circular(10.0),
-                                                        //   border: Border.all(color: Colors.teal,width: 2.0),
-                                                        // ),
-                                                        child: OutlinedButton(
-                                                          onPressed: () {
-                                                            int sky =
-                                                                prodList[i]
-                                                                        .count +
-                                                                    1;
-                                                            onlineCart(
-                                                                prodList[i]
-                                                                    .uuid,
-                                                                i,
-                                                                sky);
-                                                          },
-                                                          style: ButtonStyle(
-                                                              padding: MaterialStateProperty.all(
-                                                                  const EdgeInsets
-                                                                          .symmetric(
-                                                                      horizontal:
-                                                                          0.0)),
-                                                              side: MaterialStateProperty
-                                                                  .all(BorderSide(
-                                                                      color: Palette
-                                                                          .black,
-                                                                      width:
-                                                                          1.2)),
-                                                              shape: MaterialStateProperty.all(
-                                                                  const RoundedRectangleBorder(
-                                                                      borderRadius:
-                                                                          BorderRadius.all(Radius.circular(10.0))))),
-                                                          child: Icon(
-                                                            Icons.add,
-                                                            color:
-                                                                Palette.black,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ],
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(10, 0, 0, 2),
-                                  child: Row(
-                                    children: [
-                                      SizedBox(
-                                        width: 80,
-                                        height: 30,
-                                        child: OutlinedButton(
-                                          onPressed: () {
-                                            confDial1(prodList[i].uuid,i, 0);
-                                            //onlineCart(prodList[i].uuid, i, 0);
-                                          },
-                                          style: ButtonStyle(
-                                              backgroundColor:
-                                                  MaterialStateProperty.all(
-                                                      Palette.gray),
-                                              // side: MaterialStateProperty.all(BorderSide(color: Palette.gray,width: 1.2)),
-                                              tapTargetSize:
-                                                  MaterialTapTargetSize
-                                                      .shrinkWrap,
-                                              padding:
-                                                  MaterialStateProperty.all(
-                                                      EdgeInsets.zero),
-                                              shape: MaterialStateProperty.all(
-                                                  const RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.all(
-                                                              Radius.circular(
-                                                                  10.0))))),
-                                          child: Text('Remove',
-                                              style: Util.txt(Palette.black, 16,
-                                                  FontWeight.w500)),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          )),
-                        ],
-                      ),
-                    ),
-                    const Divider(
-                      height: 2,
+        ? Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 20),
+              child: Center(
+                  child: Text('My Cart (${c.cart.toString()} item)',
+                      style: Util.txt(Palette.black, 20, FontWeight.w700))),
+            ),
+            Expanded(
+              child: ListView(
+                  children: [
+                    for (int i = 0; i < prodList.length; i++)
+                      items_card(context: context, i: i),
+                    // Column(
+                    //   children: <Widget>[
+                    //     Padding(
+                    //       padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
+                    //       child: Row(
+                    //         children: <Widget>[
+                    //           SizedBox(
+                    //             height: 160.0,
+                    //             width: 150.0,
+                    //             child: ClipRRect(
+                    //               borderRadius:
+                    //                   const BorderRadius.all(Radius.circular(10.0)),
+                    //               child: FancyShimmerImage(
+                    //                 height: 160,
+                    //                 width: 150,
+                    //                 imageUrl: prodList[i].image,
+                    //                 shimmerBaseColor: Colors.grey[300],
+                    //                 shimmerHighlightColor: Colors.grey[100],
+                    //                 errorWidget: Image.network(
+                    //                     'https://i0.wp.com/www.dobitaobyte.com.br/wp-content/uploads/2016/02/no_image.png?ssl=1'),
+                    //               ),
+                    //             ),
+                    //           ),
+                    //           Expanded(
+                    //               child: SizedBox(
+                    //             height: 160,
+                    //             child: Column(
+                    //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //               children: <Widget>[
+                    //                 Row(
+                    //                   children: <Widget>[
+                    //                     Flexible(
+                    //                       child: Padding(
+                    //                         padding: const EdgeInsets.all(5.0),
+                    //                         child: Text(prodList[i].name,
+                    //                             style: Util.txt(Palette.black, 16,
+                    //                                 FontWeight.w500),
+                    //                             softWrap: true),
+                    //                       ),
+                    //                     ),
+                    //                   ],
+                    //                 ),
+                    //                 Padding(
+                    //                   padding:
+                    //                       const EdgeInsets.fromLTRB(5, 0, 0, 0),
+                    //                   child: Row(
+                    //                     children: <Widget>[
+                    //                       Text(
+                    //                         '\u20B9 ',
+                    //                         style: Util.txt(
+                    //                             Colors.red, 16, FontWeight.w500),
+                    //                       ),
+                    //                       Text(
+                    //                         prodList[i].price,
+                    //                         style: Util.txt(
+                    //                             Palette.black, 14, FontWeight.w500),
+                    //                       ),
+                    //                     ],
+                    //                   ),
+                    //                 ),
+                    //                 prodList[i].stock == 'not available'
+                    //                     ? Row(
+                    //                         mainAxisAlignment:
+                    //                             MainAxisAlignment.start,
+                    //                         children: [
+                    //                           Text(
+                    //                             'Out of Stock',
+                    //                             style: Util.txt(Colors.red, 18,
+                    //                                 FontWeight.w500),
+                    //                             softWrap: true,
+                    //                             textAlign: TextAlign.justify,
+                    //                           ),
+                    //                         ],
+                    //                       )
+                    //                     : SizedBox(
+                    //                         height: 40,
+                    //                         child: Column(
+                    //                           mainAxisAlignment:
+                    //                               MainAxisAlignment.end,
+                    //                           children: <Widget>[
+                    //                             Row(
+                    //                               mainAxisAlignment:
+                    //                                   MainAxisAlignment.end,
+                    //                               children: <Widget>[
+                    //                                 Visibility(
+                    //                                   visible:
+                    //                                       prodList[i].count == 0
+                    //                                           ? true
+                    //                                           : false,
+                    //                                   child: Padding(
+                    //                                     padding: const EdgeInsets
+                    //                                         .fromLTRB(0, 0, 0, 5),
+                    //                                     child: Row(
+                    //                                       children: <Widget>[
+                    //                                         SizedBox(
+                    //                                           width: 60,
+                    //                                           height: 30,
+                    //                                           child: OutlinedButton(
+                    //                                             onPressed: () {
+                    //                                               onlineCart(
+                    //                                                   prodList[i]
+                    //                                                       .uuid,
+                    //                                                   i,
+                    //                                                   1);
+                    //                                             },
+                    //                                             style: ButtonStyle(
+                    //                                                 side: MaterialStateProperty.all(
+                    //                                                     BorderSide(
+                    //                                                         color: Palette
+                    //                                                             .black,
+                    //                                                         width:
+                    //                                                             1.2)),
+                    //                                                 tapTargetSize:
+                    //                                                     MaterialTapTargetSize
+                    //                                                         .shrinkWrap,
+                    //                                                 padding: MaterialStateProperty
+                    //                                                     .all(EdgeInsets
+                    //                                                         .zero),
+                    //                                                 shape: MaterialStateProperty.all(
+                    //                                                     const RoundedRectangleBorder(
+                    //                                                         borderRadius:
+                    //                                                             BorderRadius.all(Radius.circular(10.0))))),
+                    //                                             child: Text('ADD',
+                    //                                                 style: Util.txt(
+                    //                                                     Palette
+                    //                                                         .black,
+                    //                                                     16,
+                    //                                                     FontWeight
+                    //                                                         .w500)),
+                    //                                           ),
+                    //                                         ),
+                    //                                       ],
+                    //                                     ),
+                    //                                   ),
+                    //                                 ),
+                    //                                 Visibility(
+                    //                                   visible:
+                    //                                       prodList[i].count == 0
+                    //                                           ? false
+                    //                                           : true,
+                    //                                   child: Row(
+                    //                                     children: <Widget>[
+                    //                                       SizedBox(
+                    //                                         width: 30, height: 30,
+                    //                                         // decoration: BoxDecoration(
+                    //                                         //   borderRadius: BorderRadius.circular(10.0),
+                    //                                         //   border: Border.all(color: Palette.black,width: 2.0),
+                    //                                         // ),
+                    //                                         child: OutlinedButton(
+                    //                                           onPressed: () {
+                    //                                             setState(() {
+                    //                                               int sky = prodList[
+                    //                                                           i]
+                    //                                                       .count -
+                    //                                                   1;
+                    //                                               if (sky >= 1) {
+                    //                                                 onlineCart(
+                    //                                                     prodList[i]
+                    //                                                         .uuid,
+                    //                                                     i,
+                    //                                                     sky);
+                    //                                               }
+                    //                                               if (sky == 0) {
+                    //                                                 onlineCart(
+                    //                                                     prodList[i]
+                    //                                                         .uuid,
+                    //                                                     i,
+                    //                                                     0);
+                    //                                               }
+                    //                                             });
+                    //                                           }, //
+                    //                                           style: ButtonStyle(
+                    //                                               padding: MaterialStateProperty.all(
+                    //                                                   const EdgeInsets
+                    //                                                       .symmetric(
+                    //                                                       horizontal:
+                    //                                                           0.0)),
+                    //                                               side: MaterialStateProperty
+                    //                                                   .all(BorderSide(
+                    //                                                       color: Palette
+                    //                                                           .black,
+                    //                                                       width:
+                    //                                                           1.2)),
+                    //                                               shape: MaterialStateProperty.all(
+                    //                                                   const RoundedRectangleBorder(
+                    //                                                       borderRadius:
+                    //                                                           BorderRadius.all(Radius.circular(10.0))))),
+                    //                                           child: prodList[i]
+                    //                                                       .count ==
+                    //                                                   1
+                    //                                               ? Icon(
+                    //                                                   Icons
+                    //                                                       .delete_outline,
+                    //                                                   color: Palette
+                    //                                                       .black)
+                    //                                               : Icon(
+                    //                                                   Icons.remove,
+                    //                                                   color: Palette
+                    //                                                       .black,
+                    //                                                 ),
+                    //                                         ),
+                    //                                       ),
+                    //                                       Padding(
+                    //                                         padding:
+                    //                                             const EdgeInsets
+                    //                                                 .all(5.0),
+                    //                                         child: Container(
+                    //                                           height: 30,
+                    //                                           width: 50,
+                    //                                           decoration:
+                    //                                               BoxDecoration(
+                    //                                             borderRadius:
+                    //                                                 BorderRadius
+                    //                                                     .circular(
+                    //                                                         10.0),
+                    //                                             border: Border.all(
+                    //                                                 color: Palette
+                    //                                                     .black,
+                    //                                                 width: 1.2),
+                    //                                           ),
+                    //                                           child: Center(
+                    //                                               child: Text(
+                    //                                             prodList[i]
+                    //                                                 .count
+                    //                                                 .toString(),
+                    //                                             textAlign: TextAlign
+                    //                                                 .center,
+                    //                                           )),
+                    //                                         ),
+                    //                                       ),
+                    //                                       SizedBox(
+                    //                                         width: 30,
+                    //                                         height: 30,
+                    //                                         // decoration: BoxDecoration(
+                    //                                         //   borderRadius: BorderRadius.circular(10.0),
+                    //                                         //   border: Border.all(color: Colors.teal,width: 2.0),
+                    //                                         // ),
+                    //                                         child: OutlinedButton(
+                    //                                           onPressed: () {
+                    //                                             int sky =
+                    //                                                 prodList[i]
+                    //                                                         .count +
+                    //                                                     1;
+                    //                                             onlineCart(
+                    //                                                 prodList[i]
+                    //                                                     .uuid,
+                    //                                                 i,
+                    //                                                 sky);
+                    //                                           },
+                    //                                           style: ButtonStyle(
+                    //                                               padding: MaterialStateProperty.all(
+                    //                                                   const EdgeInsets
+                    //                                                       .symmetric(
+                    //                                                       horizontal:
+                    //                                                           0.0)),
+                    //                                               side: MaterialStateProperty
+                    //                                                   .all(BorderSide(
+                    //                                                       color: Palette
+                    //                                                           .black,
+                    //                                                       width:
+                    //                                                           1.2)),
+                    //                                               shape: MaterialStateProperty.all(
+                    //                                                   const RoundedRectangleBorder(
+                    //                                                       borderRadius:
+                    //                                                           BorderRadius.all(Radius.circular(10.0))))),
+                    //                                           child: Icon(
+                    //                                             Icons.add,
+                    //                                             color:
+                    //                                                 Palette.black,
+                    //                                           ),
+                    //                                         ),
+                    //                                       ),
+                    //                                     ],
+                    //                                   ),
+                    //                                 ),
+                    //                               ],
+                    //                             )
+                    //                           ],
+                    //                         ),
+                    //                       ),
+                    //                 Padding(
+                    //                   padding:
+                    //                       const EdgeInsets.fromLTRB(10, 0, 0, 2),
+                    //                   child: Row(
+                    //                     children: [
+                    //                       SizedBox(
+                    //                         width: 80,
+                    //                         height: 30,
+                    //                         child: OutlinedButton(
+                    //                           onPressed: () {
+                    //                             confDial1(prodList[i].uuid, i, 0);
+                    //                             //onlineCart(prodList[i].uuid, i, 0);
+                    //                           },
+                    //                           style: ButtonStyle(
+                    //                               backgroundColor:
+                    //                                   MaterialStateProperty.all(
+                    //                                       Palette.gray),
+                    //                               // side: MaterialStateProperty.all(BorderSide(color: Palette.gray,width: 1.2)),
+                    //                               tapTargetSize:
+                    //                                   MaterialTapTargetSize
+                    //                                       .shrinkWrap,
+                    //                               padding:
+                    //                                   MaterialStateProperty.all(
+                    //                                       EdgeInsets.zero),
+                    //                               shape: MaterialStateProperty.all(
+                    //                                   const RoundedRectangleBorder(
+                    //                                       borderRadius:
+                    //                                           BorderRadius.all(
+                    //                                               Radius.circular(
+                    //                                                   10.0))))),
+                    //                           child: Text('Remove',
+                    //                               style: Util.txt(Palette.black, 16,
+                    //                                   FontWeight.w500)),
+                    //                         ),
+                    //                       ),
+                    //                     ],
+                    //                   ),
+                    //                 ),
+                    //               ],
+                    //             ),
+                    //           )),
+                    //         ],
+                    //       ),
+                    //     ),
+                    //     const Divider(
+                    //       height: 2,
+                    //     ),
+                    //   ],
+                    // ),
+                    const SizedBox(
+                      height: 150,
                     ),
                   ],
                 ),
-              const SizedBox(
-                height: 50,
-              ),
-            ],
-          )
+            ),
+          ],
+        )
         : Center(
             child: loader
                 ? const CupertinoActivityIndicator()
-                : Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Ionicons.cart_outline,
-                        size: 46,
-                        color: Palette.gray,
-                      ),
-                      const SizedBox(
-                        height: 4.0,
-                      ),
-                      Text(
-                        'Shopping Cart empty',
-                        style: Util.txt(Palette.black, 14, FontWeight.w300),
-                      ),
-                    ],
-                  ),
+                : _empty_cart_screen(),
           );
   }
-  confDial1( String prdid, int index, int status) {
+
+  Widget _empty_cart_screen() {
+    return Center(
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize:
+              MainAxisSize.min, // Minimize the column size to its content
+          children: [
+            Lottie.asset('assets/lottie/empty_cart.json'),
+            Text(
+              'Your Cart Is Empty',
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                color: Palette.blue_tone_light_4,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget items_card({
+    required BuildContext context,
+    required int i,
+  }) {
+    return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+        child: Card(
+          color: Colors.white,
+          elevation: 20,
+          shadowColor: Palette.blue_tone_light_4,
+          child: Row(
+            children: <Widget>[
+              ClipRRect(
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(12),
+                  bottomLeft: Radius.circular(12),
+                ),
+                child: Container(
+                  height: 160.0,
+                  width: 150.0,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: NetworkImage(prodList[i].image),
+                      fit: BoxFit.fill,
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 10),
+                  child: SizedBox(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Row(
+                          children: <Widget>[
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.all(5.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      prodList[i].name,
+                                      style: Util.txt(
+                                          Palette.black, 17, FontWeight.w700),
+                                      softWrap: true,
+                                      overflow: TextOverflow.clip,
+                                      maxLines: 3,
+                                    ),
+                                    // Padding(
+                                    //   padding: const EdgeInsets.all(5.0),
+                                    //   child: Text(
+                                    //     prodList[i].weight,
+                                    //     style: Util.txt(
+                                    //         Palette.black, 16, FontWeight.w600),
+                                    //     softWrap: true,
+                                    //     overflow: TextOverflow.clip,
+                                    //     maxLines: 3,
+                                    //   ),
+                                    // ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
+                          child: Row(
+                            children: <Widget>[
+                              Text(
+                                '\u20B9 ',
+                                style:
+                                    Util.txt(Colors.red, 16, FontWeight.w600),
+                              ),
+                              Text(
+                                prodList[i].price,
+                                style: Util.txt(
+                                    Palette.black, 16, FontWeight.w600),
+                              ),
+                            ],
+                          ),
+                        ),
+                        // SizedBox(
+                        //   height: 30.0,
+                        //   child: Padding(
+                        //     padding:
+                        //         const EdgeInsets.symmetric(horizontal: 5.0),
+                        //     child: Row(
+                        //       mainAxisAlignment: MainAxisAlignment.start,
+                        //       children: <Widget>[
+                        //         RatingBarIndicator(
+                        //           rating: double.parse(prodList[i].rating),
+                        //           direction: Axis.horizontal,
+                        //           itemCount: 5,
+                        //           itemSize: 22.0,
+                        //           itemPadding: const EdgeInsets.symmetric(
+                        //               horizontal: 1.0),
+                        //           itemBuilder: (context, _) => const Icon(
+                        //             IconlyBold.star,
+                        //             color: Colors.amber,
+                        //           ),
+                        //         ),
+                        //       ],
+                        //     ),
+                        //   ),
+                        // ),
+                        prodList[i].stock == 'not available'
+                            ? Text(
+                                'Out of Stock',
+                                style:
+                                    Util.txt(Colors.red, 20, FontWeight.w700),
+                                softWrap: true,
+                                textAlign: TextAlign.justify,
+                              )
+                            : SizedBox(
+                                height: 40,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: <Widget>[
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: <Widget>[
+                                        Visibility(
+                                          visible: prodList[i].count == 0,
+                                          child: Padding(
+                                            padding: const EdgeInsets.fromLTRB(
+                                                0, 0, 0, 5),
+                                            child: Row(
+                                              children: <Widget>[
+                                                SizedBox(
+                                                  width: 60,
+                                                  height: 30,
+                                                  child: OutlinedButton(
+                                                    onPressed: () {
+                                                      onlineCart(
+                                                          prodList[i].uuid,
+                                                          i,
+                                                          1);
+                                                    },
+                                                    style: ButtonStyle(
+                                                      side:
+                                                          MaterialStateProperty
+                                                              .all(BorderSide(
+                                                                  color: Palette
+                                                                      .black,
+                                                                  width: 1.2)),
+                                                      tapTargetSize:
+                                                          MaterialTapTargetSize
+                                                              .shrinkWrap,
+                                                      padding:
+                                                          MaterialStateProperty
+                                                              .all(EdgeInsets
+                                                                  .zero),
+                                                      shape:
+                                                          MaterialStateProperty
+                                                              .all(
+                                                        const RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius.all(
+                                                                  Radius
+                                                                      .circular(
+                                                                          10.0)),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    child: Text(
+                                                      'ADD',
+                                                      style: Util.txt(
+                                                          Palette.black,
+                                                          16,
+                                                          FontWeight.w500),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        Visibility(
+                                          visible: prodList[i].count == 0
+                                              ? false
+                                              : true,
+                                          child: Row(
+                                            children: <Widget>[
+                                              SizedBox(
+                                                width: 30,
+                                                height: 30,
+                                                child: OutlinedButton(
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      int sky =
+                                                          prodList[i].count - 1;
+                                                      if (sky >= 1) {
+                                                        onlineCart(
+                                                            prodList[i].uuid,
+                                                            i,
+                                                            sky);
+                                                      }
+                                                      if (sky == 0) {
+                                                        onlineCart(
+                                                            prodList[i].uuid,
+                                                            i,
+                                                            0);
+                                                      }
+                                                    });
+                                                  },
+                                                  style: ButtonStyle(
+                                                    padding:
+                                                        MaterialStateProperty
+                                                            .all(
+                                                                const EdgeInsets
+                                                                    .symmetric(
+                                                                    horizontal:
+                                                                        0.0)),
+                                                    side: MaterialStateProperty
+                                                        .all(BorderSide(
+                                                            color:
+                                                                Palette.black,
+                                                            width: 1.2)),
+                                                    shape: MaterialStateProperty
+                                                        .all(
+                                                      const RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    10.0)),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  child: prodList[i].count == 1
+                                                      ? Icon(
+                                                          Icons.delete_outline,
+                                                          color: Palette.black)
+                                                      : Icon(Icons.remove,
+                                                          color: Palette.black),
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.all(5.0),
+                                                child: Container(
+                                                  height: 30,
+                                                  width: 50,
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10.0),
+                                                    border: Border.all(
+                                                        color: Palette.black,
+                                                        width: 1.2),
+                                                  ),
+                                                  child: Center(
+                                                    child: Text(
+                                                      prodList[i]
+                                                          .count
+                                                          .toString(),
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                width: 30,
+                                                height: 30,
+                                                child: OutlinedButton(
+                                                  onPressed: () {
+                                                    int sky =
+                                                        prodList[i].count + 1;
+                                                    onlineCart(prodList[i].uuid,
+                                                        i, sky);
+                                                  },
+                                                  style: ButtonStyle(
+                                                    padding:
+                                                        MaterialStateProperty
+                                                            .all(
+                                                                const EdgeInsets
+                                                                    .symmetric(
+                                                                    horizontal:
+                                                                        0.0)),
+                                                    side: MaterialStateProperty
+                                                        .all(BorderSide(
+                                                            color:
+                                                                Palette.black,
+                                                            width: 1.2)),
+                                                    shape: MaterialStateProperty
+                                                        .all(
+                                                      const RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    10.0)),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  child: Icon(Icons.add,
+                                                      color: Palette.black),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ));
+  }
+
+  confDial1(String prdid, int index, int status) {
     showDialog(
       context: context,
-      barrierDismissible: true, // Allows the dialog to be dismissed by tapping outside of it
+      barrierDismissible:
+          true, // Allows the dialog to be dismissed by tapping outside of it
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text(
@@ -537,7 +871,8 @@ class _CartListState extends State<CartList> {
             TextButton(
               onPressed: () {
                 Navigator.pop(context); // Close the dialog
-                onlineCart(prdid, index, 0); // Execute the function to remove the product
+                onlineCart(prdid, index,
+                    0); // Execute the function to remove the product
               },
               child: Text(
                 'Ok',
@@ -557,12 +892,14 @@ class _CartListState extends State<CartList> {
           ],
           elevation: 24.0, // Optional: Adds shadow to the dialog
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12.0), // Optional: Rounds the corners
+            borderRadius:
+                BorderRadius.circular(12.0), // Optional: Rounds the corners
           ),
         );
       },
     );
   }
+
   //---------
   onlineCart(String itemcode, int index, int count) async {
     String userid = await Util.getStringValuesSF('userid');

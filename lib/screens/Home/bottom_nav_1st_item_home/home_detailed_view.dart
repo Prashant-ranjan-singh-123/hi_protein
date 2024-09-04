@@ -20,10 +20,11 @@ import '../bottom_nav_3rd_item_search/Search.dart';
 
 
 class DetailedView extends StatefulWidget {
-   const DetailedView({Key? key, required this.name, required this.id, required this.state,}) : super(key: key);
+   const DetailedView({Key? key, required this.name, required this.id, required this.state, this.previous_search=''}) : super(key: key);
     final String name;
     final String id;
     final int state;
+    final String previous_search;
   @override
   _DetailedViewState createState() => _DetailedViewState();
 }
@@ -72,15 +73,16 @@ class _DetailedViewState extends State<DetailedView> {
   }
   nav(){
     if(widget.state==2){
-      Navigator.push(context, MaterialPageRoute(builder: (context)=>const HomeScreen()));
+      Navigator.push(context, MaterialPageRoute(builder: (context)=>NavigationItemBar(state: 0)));
       c.nav.value=0;
     }
     else if(widget.state==3){
-      Navigator.push(context, MaterialPageRoute(builder: (context)=>const Search(share: {'state':0},)));
+      Navigator.push(context, MaterialPageRoute(builder: (context)=> NavigationItemBar(state: 2, initialDishToSearch: widget.previous_search,)));
       c.nav.value=2;
     }
     else{
-      Navigator.push(context, MaterialPageRoute(builder: (context)=>ProductList(state: widget.state, name: widget.name,)));
+      // Navigator.push(context, MaterialPageRoute(builder: (context)=>ProductList(state: widget.state, name: widget.name,)));
+      Navigator.push(context, MaterialPageRoute(builder: (context)=>NavigationItemBar(state: 0)));
     }
   }
   @override
@@ -100,11 +102,11 @@ class _DetailedViewState extends State<DetailedView> {
             extendBodyBehindAppBar:true,
             body: SafeArea(
                 child: checkConnection()),
-            bottomSheet: Container(
-              color: Palette.white,
-              height: 50,
-              child: const NavigationItemBar(state: 5,),
-            ),
+            // bottomSheet: Container(
+            //   // color: Palette.white,
+            //   height: Util.bottomNavBarHeight,
+            //   child: const NavigationItemBar(state: 5,),
+            // ),
           ),
         ),
       ),

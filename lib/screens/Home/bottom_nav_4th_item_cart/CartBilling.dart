@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'package:dotted_decoration/dotted_decoration.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:slide_to_act/slide_to_act.dart';
 
 import '../../../Model/Product_Model.dart';
 import '../../../utilities/AppManagement.dart';
@@ -34,6 +36,7 @@ class _CartBillingState extends State<CartBilling> {
     String userid = await Util.getStringValuesSF('userid');
     available = await Util.getStringValuesSF('availability');
     outofstockcount = await Util.getStringValuesSF('outofstockvalue');
+    // await availibilityCheck();
     try{
       final productList = http.MultipartRequest('POST',Uri.parse('${Util.baseurl}promocode.php'));
       productList.fields['userid']=userid;
@@ -54,185 +57,74 @@ class _CartBillingState extends State<CartBilling> {
       });
     }
   }
+
+
+  availibilityCheck()async {
+    String userid = await Util.getStringValuesSF('userid');
+    try {
+      final availabilityCheck =http.MultipartRequest('POST', Uri.parse('${Util.baseurl}availability.php'));
+      availabilityCheck.fields['client'] = Util.clientName;
+      availabilityCheck.fields['userid'] = userid;
+      final snd = await availabilityCheck.send();
+      final response = await http.Response.fromStream(snd);
+      print('availability.php response code: ${response.statusCode}');
+      if (response.statusCode == 200) {
+        var dec = jsonDecode(response.body);
+        print('availability.php data: ${response.body}');
+        if (dec['status'] == '1') {
+          // isavailable = true;
+          Util.addStringToSF('availability', dec['status'].toString(),'');
+          Util.addStringToSF('availabl', dec['available'].toString(),'');
+          Util.addStringToSF('msg', dec['message'].toString(),'');
+        } else {
+            Util.addStringToSF('availability', '0','');
+            Util.addStringToSF('availabl', dec['available'].toString(),'');
+            // isavailable = false;
+            // alert();
+        }
+      } else {
+        // Util.addStringToSF('availability', dec['status'].toString(),'');
+        // Util.addStringToSF('availabl', dec['available'].toString(),'');
+        // Util.addStringToSF('msg', dec['message'].toString(),'');
+      }
+    } catch (e) {
+      Util.logDebug(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Obx(()=>Container(
-      height: 100,//246,
-      decoration: DottedDecoration(
-          borderRadius: BorderRadius.circular(10.0),
-          // shape: Shape.box
-          // border: Border.all(color: Palette.black,width: 1.0)
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
-          Table(
-            border: TableBorder.all(color: Palette.background),
-            // defaultColumnWidth: FixedColumnWidth(120),
-            columnWidths: const {0:FixedColumnWidth(140),1:FixedColumnWidth(150)},
-            children: [
-              TableRow(
-                  children: [
-                    Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(5.0),
-                          child: Text('Total (${c.cart.value} items)',style: Util.txt(Palette.black,14, FontWeight.w300),),
-                        )
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(5.0),
-                          child: Text(":   \u20B9 ${c.totalAmount}",style: Util.txt(Palette.black,16, FontWeight.w500),),
-                        )
-                      ],
-                    ),
-                  ]
-              ),
-              // TableRow(
-              //     children: [
-              //       Row(
-              //         children: [
-              //           Padding(
-              //             padding: const EdgeInsets.all(5.0),
-              //             child: Text('Shipping Charges',style: Util.txt(Palette.black,14, FontWeight.w300),),
-              //           )
-              //         ],
-              //       ),
-              //       Row(
-              //         children: [
-              //           Padding(
-              //             padding: const EdgeInsets.all(5.0),
-              //             child: Text(':   To Pay ',style: Util.txt(Palette.black,16, FontWeight.w500),),
-              //           )
-              //         ],
-              //       ),
-              //     ]
-              // ),
-              // if(!c.promo.value)
-              // TableRow(
-              //     children: [
-              //       Row(
-              //         children: [
-              //           Padding(
-              //             padding: const EdgeInsets.all(5.0),
-              //             child: Text('Discount amount ',style: Util.txt(Palette.black,14, FontWeight.w300),),
-              //           )
-              //         ],
-              //       ),
-              //       Row(
-              //         children: [
-              //           Padding(
-              //             padding: const EdgeInsets.all(5.0),
-              //             child: Text(':   -\u20B9 ${c.totalAmount.toDouble()}',style: Util.txt(Palette.black,16, FontWeight.w500),),
-              //           )
-              //         ],
-              //       ),
-              //     ]
-              // ),
-              // TableRow(
-              //     children: [
-              //       Row(
-              //         children: [
-              //           Padding(
-              //             padding: const EdgeInsets.all(5.0),
-              //             child: Text('Total amount',style: Util.txt(Palette.black,14, FontWeight.w400),),
-              //           )
-              //         ],
-              //       ),
-              //       Row(
-              //         children: [
-              //           Padding(
-              //             padding: const EdgeInsets.all(5.0),
-              //             child: Text(":   \u20B9 ${c.checkOutPrice}",style: Util.txt(Palette.black,16, FontWeight.w500),),
-              //           )
-              //         ],
-              //       ),
-              //     ]
-              // ),
-            ],
-          ),
-          // Row(
-          //   mainAxisAlignment: MainAxisAlignment.center,
-          //   children: [
-          //     Text(c.promo.value?'':'PromoCode Applied',style: const TextStyle(color: Colors.teal),)            ],
-          // ),
-          // Padding(
-          //   padding: const EdgeInsets.fromLTRB(10, 10, 10, 20),
-          //   child: Row(
-          //     children: [
-          //       Expanded(
-          //         child: TextField(
-          //           controller: promoCode,
-          //           enabled: c.promo.value,
-          //           keyboardType: TextInputType.text,
-          //           style: Util.txt(Palette.black, 14, FontWeight.w400),
-          //           decoration: InputDecoration(
-          //             hintText: 'Enter Promocode',
-          //             hintStyle: Util.txt(Palette.black, 14, FontWeight.w400),
-          //             fillColor: Palette.white,
-          //             enabledBorder: InputBorder.none,
-          //             focusedBorder: InputBorder.none,
-          //             border: InputBorder.none,
-          //             isDense: true,
-          //             filled: true,
-          //             contentPadding: EdgeInsets.all(10.0),
-          //           ),
-          //         ),
-          //       ),
-          //       SizedBox(width: 5.0,),
-          //       Container(height: 36,
-          //         child: OutlinedButton(onPressed: (){
-          //           if(c.promo.value){
-          //             checkprmCode();
-          //           }
-          //           else{
-          //             setState(() {
-          //               c.promo.value=true;
-          //               c.checkOutPrice.value=c.totalAmount.toDouble();
-          //               if(c.checkOutPrice.toDouble()<1000){c.checkOutPrice.value=c.checkOutPrice.value+c.charges.value;}
-          //             });
-          //           }
-          //         },
-          //           style: ButtonStyle(
-          //             side: MaterialStateProperty.all(BorderSide(color: Palette.black)),
-          //             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          //             padding: MaterialStateProperty.all(EdgeInsets.fromLTRB(4, 0, 4, 0)),
-          //           ),
-          //           child: Text(c.promo.value?'Apply':'Change',style: Util.txt(Palette.black, 16, FontWeight.w500),),
-          //         ),
-          //       ),
-          //     ],
-          //   ),
-          // ),
-          //if(available != '')
-          SizedBox(
-            height: 40,
-            child: Card(
-              color: Colors.amber,
-              elevation: 1,
-              child: SizedBox(height: 30,
-                child: TextButton(
-                    onPressed: () async { 
-                      available = await Util.getStringValuesSF('availability');
-                      if(available.toString() == '1' && outofstockcount == '0'){
-                       // ignore: use_build_context_synchronously
-                       Navigator.push(context, MaterialPageRoute(builder: (context)=>const DeliveryAddress()));
-                      }
-                      else{
-                       available.toString() != '1'?showResponseAlert('sorry, we are not accepting orders at this moment'): showResponseAlert('sorry, remove out of stock item'); 
-                      }
-                    },
-                    style: ButtonStyle(
-                      padding: MaterialStateProperty.all(const EdgeInsets.fromLTRB(10, 4, 10, 4))
-                    ),
-                    child: Text('Proceed to Checkout',textAlign: TextAlign.center,style: Util.txt(Palette.black, 16, FontWeight.w500),)),
+    return Obx(()=>SizedBox(
+      width: MediaQuery.of(context).size.width,
+      height: 140,
+      child: Card(
+        color: Palette.blue_tone_green.withGreen(150),
+        shape: const RoundedRectangleBorder(
+            borderRadius:  BorderRadius.only(
+              topLeft: Radius.circular(12),
+              topRight: Radius.circular(12),
+              bottomLeft: Radius.circular(0),
+              bottomRight: Radius.circular(0),
+            )
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  const Spacer(),
+                  Text('Total (${c.cart.value} items):',style: Util.txt(Palette.blue_tone_white,18, FontWeight.w500),),
+                  const Spacer(),
+                  Text("\u20B9 ${c.totalAmount}",style: Util.txt(Palette.blue_tone_white ,20, FontWeight.w800),),
+                  const Spacer()
+                ],
               ),
             ),
-          ),
-        ],
+            slide_action()
+          ],
+        ),
       ),
     )) ;
   }
@@ -283,6 +175,44 @@ class _CartBillingState extends State<CartBilling> {
           ],
         );
       },
+    );
+  }
+
+  Widget slide_action() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: SlideAction(
+        innerColor: Palette.blue_tone_white,
+        elevation: 0,
+          height: 60,
+        sliderButtonIconPadding:12,
+          borderRadius:70,
+        sliderButtonIcon: const Icon(IconlyLight.wallet),
+        // outerColor: Palette.blue_tone_black,
+        outerColor: Palette.blue_tone_green.withGreen(80),
+        textColor: Palette.blue_tone_white,
+        text: 'Checkout',
+        textStyle: TextStyle(
+            color: Palette.blue_tone_white,
+            fontWeight: FontWeight.w700,
+            fontFamily: 'Poppins',
+            fontSize: 20),
+        // borderRadius: 55,
+        onSubmit: () async {
+          await availibilityCheck();
+          available = await Util.getStringValuesSF('availability');
+          print('Available: ${available}');
+          if(available.toString() == '1' && outofstockcount == '0'){
+            print('COndition 1');
+            // ignore: use_build_context_synchronously
+            Navigator.push(context, MaterialPageRoute(builder: (context)=>const DeliveryAddress()));
+          }
+          else{
+            print('COndition 2');
+            available.toString() != '1'?showResponseAlert('sorry, we are not accepting orders at this moment'): showResponseAlert('sorry, remove out of stock item');
+          }
+        },
+      ),
     );
   }
   //-----
